@@ -8,8 +8,9 @@ response status codes, and response body content.
 
 The application has OpenAPI Swagger interface at `/docs`.
 
-The applicaiton has Redoc documentation inteface at `redoc`.
+The applicaiton has Redoc documentation inteface at `/redoc`.
 
+![SwaggerIO](/static/images/swaggerui.jpg)
 
 ## Build
 
