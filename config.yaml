@@ -1,65 +1,92 @@
 debug: false
-configs:
-  - src_cidr:  ALL
-    path_re_match: ALL
-    method: ALL
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{}'
-    mime_type: 'application/json'
-    ip_version: 4
-  - src_cidr:  '192.168.0.0/24'
-    path_re_match: 'ALL'
-    method: GET
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{"method":"get","config":"default"}'
-    mime_type: 'application/json'
-    ip_version: 4
-  - src_cidr:  '127.0.0.1/32'
+policies:
+  - src_cidr:  'ALL'
     path_re_match: '^\/get\/.*$'
     method: GET
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{"method":"get","config":"default"}'
-    mime_type: 'application/json'
+    header: NONE
     ip_version: 4
-  - src_cidr:  '127.0.0.1/32'
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"get","config":"local_default"}'
+        body_encoding: NONE
+  - src_cidr:  'ALL'
     path_re_match: '^\/post\/.*$'
     method: POST
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{"method":"post","config":"default"}'
-    mime_type: 'application/json'
+    header: NONE
     ip_version: 4
-  - src_cidr:  '127.0.0.1/32'
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"post","config":"local_default"}'
+        body_encoding: NONE
+  - src_cidr:  'ALL'
     path_re_match: '^\/put\/.*$'
     method: PUT
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{"method":"get","config":"default"}'
-    mime_type: 'application/json'
+    header: NONE
     ip_version: 4
-  - src_cidr:  '127.0.0.1/32'
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"put","config":"local_default"}'
+        body_encoding: NONE
+  - src_cidr:  'ALL'
     path_re_match: '^\/patch\/.*$'
     method: PATCH
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{"method":"get","config":"default"}'
-    mime_type: 'application/json'
+    header: NONE
     ip_version: 4
-  - src_cidr:  '127.0.0.1/32'
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"patch","config":"local_default"}'
+        body_encoding: NONE
+  - src_cidr:  'ALL'
+    path_re_match: '^\/head\/.*$'
+    method: HEAD
+    header: NONE
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"head","config":"local_default"}'
+        body_encoding: NONE
+  - src_cidr:  'ALL'
     path_re_match: '^\/delete\/.*$'
     method: DELETE
-    header: null
-    delay_ms: 0
-    status_code: 200
-    body: '{"method":"get","config":"default"}'
-    mime_type: 'application/json'
+    header: NONE
     ip_version: 4
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"delete","config":"local_default"}'
+        body_encoding: NONE
+  - src_cidr:  'ALL'
+    path_re_match: 'ALL'
+    method: GET
+    header: NONE
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 5
+        body: '{"method":"get","config":"local_default_ok"}'
+        body_encoding: NONE
+      - delay_ms: 2000
+        status_code: 500
+        mime_type: 'application/json'
+        repeat: 1
+        body: '{"method":"get","config":"local_default_error"}'
+        body_encoding: NONE
