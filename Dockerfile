@@ -7,5 +7,6 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 COPY ./static /app/static
 COPY ./config.yaml /app/config.yaml
 COPY ./main.py /app/main.py
+COPY ./logging.conf /app/logging.conf
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

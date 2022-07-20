@@ -1,7 +1,8 @@
 debug: false
 policies:
-  - src_cidr:  'ALL'
-    path_re_match: '^\/get\/.*$'
+  - id: 0
+    src_cidr:  'ALL'
+    path_re_match: '^/get/.*$'
     method: GET
     header: NONE
     ip_version: 4
@@ -10,9 +11,10 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"get","config":"local_default"}'
+        body: '{"method":"get","config":"local_get_default"}'
         body_encoding: NONE
-  - src_cidr:  'ALL'
+  - id: 1
+    src_cidr:  'ALL'
     path_re_match: '^\/post\/.*$'
     method: POST
     header: NONE
@@ -22,9 +24,10 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"post","config":"local_default"}'
+        body: '{"method":"post","config":"local_post_default"}'
         body_encoding: NONE
-  - src_cidr:  'ALL'
+  - id: 2
+    src_cidr:  'ALL'
     path_re_match: '^\/put\/.*$'
     method: PUT
     header: NONE
@@ -34,9 +37,10 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"put","config":"local_default"}'
+        body: '{"method":"put","config":"local_put_default"}'
         body_encoding: NONE
-  - src_cidr:  'ALL'
+  - id: 3
+    src_cidr:  'ALL'
     path_re_match: '^\/patch\/.*$'
     method: PATCH
     header: NONE
@@ -46,9 +50,10 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"patch","config":"local_default"}'
+        body: '{"method":"patch","config":"local_patch_default"}'
         body_encoding: NONE
-  - src_cidr:  'ALL'
+  - id: 4
+    src_cidr:  'ALL'
     path_re_match: '^\/head\/.*$'
     method: HEAD
     header: NONE
@@ -58,9 +63,10 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"head","config":"local_default"}'
+        body: '{"method":"head","config":"local_head_default"}'
         body_encoding: NONE
-  - src_cidr:  'ALL'
+  - id: 5
+    src_cidr:  'ALL'
     path_re_match: '^\/delete\/.*$'
     method: DELETE
     header: NONE
@@ -70,9 +76,10 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"delete","config":"local_default"}'
+        body: '{"method":"delete","config":"local_delete_default"}'
         body_encoding: NONE
-  - src_cidr:  'ALL'
+  - id: 6
+    src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: GET
     header: NONE
@@ -82,7 +89,7 @@ policies:
         status_code: 200
         mime_type: 'application/json'
         repeat: 5
-        body: '{"method":"get","config":"local_default_ok"}'
+        body: '{"method":"get","config":"local_all_default_ok"}'
         body_encoding: NONE
       - delay_ms: 2000
         status_code: 500
