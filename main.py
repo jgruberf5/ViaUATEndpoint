@@ -518,6 +518,14 @@ async def delete_policy(id: int):
     return list(policies.values())
 
 
+def resolve_xff_header(xff_val):
+    xff_val = xff_val.decode('utf-8')
+    if ', ' in xff_val:
+        return re.split(', ', xff_val)
+    else:
+        return [xff_val, None]
+
+
 @app.get('/{path_name:path}')
 async def get_response(path_name: str, request: Request, response: Response):
     client_host = request.client.host
@@ -526,7 +534,7 @@ async def get_response(path_name: str, request: Request, response: Response):
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
 
 
@@ -538,7 +546,7 @@ async def post_response(path_value: str, request: Request, response: Response):
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
 
 
@@ -550,7 +558,7 @@ async def put_response(path_value: str, request: Request, response: Response):
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
 
 
@@ -562,7 +570,7 @@ async def patch_response(path_value: str, request: Request, response: Response):
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
 
 
@@ -574,7 +582,7 @@ async def head_response(path_value: str, request: Request, response: Response):
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
 
 
@@ -586,7 +594,7 @@ async def delete_response(path_value: str, request: Request, response: Response)
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
 
 
@@ -598,5 +606,5 @@ async def options_response(path_value: str, request: Request, response: Response
     x = 'x-forwarded-for'.encode('utf-8')
     for header in request.headers.raw:
         if header[0].lower() == x:
-            origin_ip, forward_ip = re.split(', ', header[1].decode('utf-8'))
+            origin_ip, forward_ip = resolve_xff_header(header[1])
     return apply_policy([origin_ip, forward_ip, client_host], request)
