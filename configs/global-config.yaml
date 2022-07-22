@@ -79,8 +79,21 @@ policies:
         body: '{"method":"delete","config":"via_uat_delete_default"}'
         body_encoding: NONE
   - id: 6
+    src_cidr:  'ALL'
+    path_re_match: 'ALL'
+    method: GET
+    header: NONE
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 0
+        status_code: 200
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"get","config":"amsterdam_all_default_ok"}'
+        body_encoding: NONE
+  - id: 7
     src_cidr:  '104.219.105.84/32'
-    path_re_match: '^/get/.*$'
+    path_re_match: 'ALL'
     method: GET
     header: NONE
     ip_version: 4
