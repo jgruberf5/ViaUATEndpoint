@@ -78,3 +78,16 @@ policies:
         repeat: 0
         body: '{"method":"delete","config":"via_uat_delete_default"}'
         body_encoding: NONE
+  - id: 6
+    src_cidr:  '104.219.105.84/32'
+    path_re_match: '^/get/.*$'
+    method: GET
+    header: NONE
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 5000
+        status_code: 204
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"get","config":"via_uat_get_default"}'
+        body_encoding: NONE
