@@ -91,9 +91,3 @@ policies:
         repeat: 5
         body: '{"method":"get","config":"dallas_all_default_ok"}'
         body_encoding: NONE
-      - delay_ms: 2000
-        status_code: 500
-        mime_type: 'application/json'
-        repeat: 1
-        body: '{"method":"get","config":"dallas_default_error"}'
-        body_encoding: NONE
