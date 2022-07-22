@@ -11,7 +11,8 @@ from operator import index
 import os
 import re
 import time
-import urllib
+import urllib.request as urllibrequest
+import urllib.parse as urllibparse
 import validators
 import yaml
 
@@ -214,7 +215,7 @@ class PolicyCreate(BaseModel):
 
 def read_config_from_local_file(filepath):
     global DEFAULT_POLICIES, DEBUG
-    logger.debug('reading configuration from file://%s', filepath)
+    logger.info('reading configuration from file://%s', filepath)
     if os.path.exists(filepath):
         with open(filepath) as cf:
             try:
@@ -229,15 +230,17 @@ def read_config_from_local_file(filepath):
 
 def read_config_from_url(fileurl):
     global DEFAULT_POLICIES, DEBUG
-    logger.debug('reading configuration from %s', fileurl)
+    logger.info('reading configuration from %s', fileurl)
     try:
-        with urllib.request.urlopen(fileurl) as cf:
+
+        with urllibrequest.urlopen(fileurl) as cf:
             cf_obj = yaml.safe_load(cf)
             DEFAULT_POLICIES = cf_obj['policies']
             DEBUG = cf_obj['debug']
             if DEBUG:
                 logger.setLevel(logging.DEBUG)
     except Exception as error:
+        logger.error('Error retrieving config file from: %s: %s', fileurl, error)
         read_config_from_local_file(DEFAULT_CONFIG_FILE)
 
 
@@ -471,7 +474,7 @@ async def create_policy(policy: PolicyCreate):
         policy.src_cidr,
         policy.method,
         policy.header,
-        urllib.parse.unquote(policy.path_re_match)
+        urllibparse.unquote(policy.path_re_match)
     )
     reply_scripts = []
     for rs in policy.reply_scripts:
@@ -489,7 +492,7 @@ async def create_policy(policy: PolicyCreate):
         'src_cidr': policy.src_cidr,
         'method': policy.method,
         'header': policy.header,
-        'path_re_match': urllib.parse.unquote(policy.path_re_match),
+        'path_re_match': urllibparse.unquote(policy.path_re_match),
         'ip_version': policy.ip_version,
         'reply_scripts': reply_scripts
     }
