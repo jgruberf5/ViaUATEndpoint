@@ -102,7 +102,7 @@ policies:
         status_code: 500
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"get","config":"amsterdam_all_default_ok"}'
+        body: '{"method":"get","config":"fail"}'
         body_encoding: NONE
   - id: 8
     src_cidr: '174.197.66.183/32'
@@ -115,5 +115,5 @@ policies:
         status_code: 500
         mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"get","config":"amsterdam_all_default_ok"}'
+        body: '{"method":"get","config":"fail"}'
         body_encoding: NONE
