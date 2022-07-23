@@ -104,3 +104,16 @@ policies:
         repeat: 0
         body: '{"method":"get","config":"amsterdam_all_default_ok"}'
         body_encoding: NONE
+  - id: 8
+    src_cidr: '174.197.66.183/32'
+    path_re_match: 'ALL'
+    method: GET
+    header: NONE
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 5000
+        status_code: 500
+        mime_type: 'application/json'
+        repeat: 0
+        body: '{"method":"get","config":"amsterdam_all_default_ok"}'
+        body_encoding: NONE
