@@ -92,7 +92,7 @@ policies:
         body: '{"method":"get","config":"amsterdam_all_default_ok"}'
         body_encoding: NONE
   - id: 7
-    src_cidr:  '18.224.176.13/32'
+    src_cidr:  '18.0.0.0/8'
     path_re_match: 'ALL'
     method: GET
     header: NONE
