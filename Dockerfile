@@ -8,7 +8,7 @@ RUN adduser worker
 COPY ./static /app/static
 COPY ./config.yaml /app/config.yaml
 COPY ./main.py /app/main.py
-COPY ./logging.conf /app/logging.conf
+COPY ./logging_config.py /app/logging_config.py
 
 RUN chown -R worker /app
 
