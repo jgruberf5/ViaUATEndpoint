@@ -2,98 +2,105 @@ debug: false
 policies:
   - id: 0
     src_cidr:  'ALL'
-    path_re_match: '^/get/.*$'
+    path_re_match: 'ANY'
     method: GET
-    header: NONE
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"get","config":"london_get_default"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_get"}'
+        direct_response_body_encoding: NONE
   - id: 1
     src_cidr:  'ALL'
-    path_re_match: '^\/post\/.*$'
+    path_re_match: 'ANY'
     method: POST
-    header: NONE
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"post","config":"london_post_default"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_post"}'
+        direct_response_body_encoding: NONE
   - id: 2
     src_cidr:  'ALL'
-    path_re_match: '^\/put\/.*$'
+    path_re_match: 'ANY'
     method: PUT
-    header: NONE
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"put","config":"london_put_default"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_put"}'
+        direct_response_body_encoding: NONE
   - id: 3
     src_cidr:  'ALL'
-    path_re_match: '^\/patch\/.*$'
+    path_re_match: 'ANY'
     method: PATCH
-    header: NONE
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"patch","config":"london_patch_default"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_patch"}'
+        direct_response_body_encoding: NONE
   - id: 4
     src_cidr:  'ALL'
-    path_re_match: '^\/head\/.*$'
+    path_re_match: 'ANY'
     method: HEAD
-    header: NONE
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"head","config":"london_head_default"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_head"}'
+        direct_response_body_encoding: NONE
   - id: 5
     src_cidr:  'ALL'
-    path_re_match: '^\/delete\/.*$'
+    path_re_match: 'ANY'
     method: DELETE
-    header: NONE
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
         repeat: 0
-        body: '{"method":"delete","config":"london_delete_default"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_delete"}'
+        direct_response_body_encoding: NONE
   - id: 6
     src_cidr:  'ALL'
     path_re_match: 'ALL'
-    method: GET
-    header: NONE
+    method: ANY
+    headers:
+      - x-volterra-location: tn2-lon
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
-        status_code: 200
-        mime_type: 'application/json'
-        repeat: 5
-        body: '{"method":"get","config":"london_all_default_ok"}'
-        body_encoding: NONE
-      - delay_ms: 2000
-        status_code: 500
-        mime_type: 'application/json'
-        repeat: 1
-        body: '{"method":"get","config":"london_default_error"}'
-        body_encoding: NONE
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"london_generic"}'
+        direct_response_body_encoding: NONE
