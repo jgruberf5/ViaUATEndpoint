@@ -131,7 +131,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                     pass
             if env_required_to_match:
                 # logger.debug('need to match at %d envs', env_required_to_match)
-                env_match_scrore = 0
+                env_match_score = 0
                 number_envs_matching = 0
                 # we have to interate through them all
                 # in case the match with the higher
@@ -140,30 +140,30 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                     env_name = list(env.keys())[0]
                     env_match_value = env[env_name]
                     if os.getenv(env_name, None):
-                        logger.debug('checking env %s match for %s',
-                                     env, env_match_value)
+                        #logger.debug('checking env %s match for %s',
+                        #             env, env_match_value)
                         if env_match_value.lower() == 'any':
                             logger.debug('env: %s matched any', env)
                             number_envs_matching = number_envs_matching + 1
-                            env_match_scrore = env_match_scrore + 1
+                            env_match_score = env_match_score + 1
                         elif env_match_value == os.getenv(env_name):
                             logger.debug('env: %s matched exact', env)
                             number_envs_matching = number_envs_matching + 1
-                            env_match_scrore = env_match_scrore + 3
+                            env_match_score = env_match_score + 3
                         else:
                             try:
                                 p = re.compile(env_match_value)
                                 if p.match(os.getenv(env_name)):
                                     logger.debug('env: %s matched regex', env)
                                     number_envs_matching = number_envs_matching + 1
-                                    env_match_scrore = env_match_scrore + 2
+                                    env_match_score = env_match_score + 2
                             except:
                                 pass
                     else:
-                        logging.debug('env %s in policy not found in environment', env_name)
+                        logger.debug('env %s in policy not found in environment', env_name)
                 if number_envs_matching >= env_required_to_match:
                     env_match = True
-                    policy_match_score = policy_match_score + env_match_scrore
+                    policy_match_score = policy_match_score + env_match_score
         else:
             # No match critera for env, so match all..
             env_match = True
@@ -197,11 +197,11 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                     header_name = list(header.keys())[0].lower()
                     header_match_value = header[header_name]
                     if header_name in found_headers:
-                        logger.debug(
-                            'checking header %s:%s match for %s',
-                            header_name,
-                            request.headers.get(header_name),
-                            header_match_value)
+                        #logger.debug(
+                        #    'checking header %s:%s match for %s',
+                        #    header_name,
+                        #    request.headers.get(header_name),
+                        #    header_match_value)
                         if header_match_value.lower() == 'any':
                             logger.debug('header: %s matched any', header_name)
                             number_headers_matching = number_headers_matching + 1
@@ -247,7 +247,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
             path_regex_match = True
             policy_match_score = policy_match_score + 1
         else:
-            logging.debug('trying path regex match: %s for %s',
+            logger.debug('trying path regex match: %s for %s',
                           policy['path_re_match'], request.url.path)
             if policy['path_re_match']:
                 try:
@@ -257,9 +257,9 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                         policy_match_score = policy_match_score + 2
                 except:
                     pass
-        logging.debug(
-            'env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
-            env_match, header_match, method_match, path_regex_match, policy_match_score
+        logger.debug(
+            'policy %s result: env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
+            policy_hash, env_match, header_match, method_match, path_regex_match, policy_match_score
         )
         if env_match and header_match and method_match and path_regex_match:
             logger.debug('policy with hash: %s has a match score of %d',
