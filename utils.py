@@ -135,6 +135,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                 number_headers_matching = 0
                 # avoid looping over and over
                 found_headers = request.headers.keys()
+                logger.debug('request headers: %s', found_headers)
                 # we have to interate through them all
                 # in case the match with the higher
                 # precise matching is latter in the match
@@ -142,6 +143,11 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                     header_name = list(header.keys())[0].lower()
                     header_match_value = header[header_name]
                     if header_name in found_headers:
+                        logger.debug(
+                            'checking header %s:%s match for %s',
+                            header_name,
+                            request.headers.get(header_name),
+                            header_match_value)
                         if header_match_value.lower() == 'any':
                             logger.debug('header: %s matched any', header_name)
                             number_headers_matching = number_headers_matching + 1
