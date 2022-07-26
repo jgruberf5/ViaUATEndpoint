@@ -117,19 +117,20 @@ def get_matched_policy_hash(request, policy_hashes, policies):
         # env matching is present and value
         env_match = False
         if 'env' in policy and policy['env']:
-            required_to_match = 0
+            env_required_to_match = 0
             if 'env_policy_match' not in policy:
                 policy['env_policy_match'] = 'and'
             if policy['env_policy_match'].lower() == 'and':
-                required_to_match = len(policy['env'])
+                env_required_to_match = len(policy['env'])
             elif policy['env_policy_match'].lower() == 'or':
-                required_to_match = 1
+                env_required_to_match = 1
             else:
                 try:
-                    required_to_match = int(policy['env_match_policy'])
+                    env_required_to_match = int(policy['env_match_policy'])
                 except:
                     pass
-            if required_to_match:
+            if env_required_to_match:
+                logger.debug('need to match at %d envs', env_required_to_match)
                 env_match_scrore = 0
                 number_envs_matching = 0
                 # we have to interate through them all
@@ -160,7 +161,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                                 pass
                     else:
                         logging.debug('env %s in policy not found in environment', env_name)
-                if number_envs_matching >= required_to_match:
+                if number_envs_matching >= env_required_to_match:
                     env_match = True
                     policy_match_score = policy_match_score + env_match_scrore
         else:
@@ -170,19 +171,20 @@ def get_matched_policy_hash(request, policy_hashes, policies):
         header_match = False
         if 'headers' in policy and policy['headers']:
             # If multiple headers are present, all must match.
-            required_to_match = 0
+            headers_required_to_match = 0
             if 'header_match_policy' not in policy:
                 policy['header_match_policy'] = 'and'
             if policy['header_match_policy'].lower() == 'and':
-                required_to_match = len(policy['headers'])
+                headers_required_to_match = len(policy['headers'])
             elif policy['header_match_policy'].lower() == 'or':
-                required_to_match = 1
+                headers_required_to_match = 1
             else:
                 try:
-                    required_to_match = int(policy['header_match_policy'])
+                    headers_required_to_match = int(policy['header_match_policy'])
                 except:
                     pass
-            if required_to_match:
+            if headers_required_to_match:
+                logger.debug('need to match at %d headers', env_required_to_match)
                 header_match_scrore = 0
                 number_headers_matching = 0
                 # avoid looping over and over
@@ -223,7 +225,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                     else:
                         logger.debug(
                             'header %s in policy not found in request', header_name)
-                if number_headers_matching >= required_to_match:
+                if number_headers_matching >= headers_required_to_match:
                     header_match = True
                     policy_match_score = policy_match_score + header_match_scrore
         else:
