@@ -5,8 +5,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ANY'
     method: ANY
-    headers:
-      - x-volterra-location: ams9-ams
+    env:
+      - VES_IO_SITENAME: ves-io-ams9-ams
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -21,8 +23,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: dc12-ash
+    env:
+      - VES_IO_SITENAME: ves-io-dc12-ash
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -36,8 +40,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: dal3-dal
+    env:
+      - VES_IO_SITENAME: ves-io-dal3-dal
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -51,8 +57,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: fr4-fra
+    env:
+      - VES_IO_SITENAME: ves-io-fr4-fra
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -66,8 +74,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: hk2-hkg
+    env:
+      - VES_IO_SITENAME: ves-io-hk2-hkg
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -81,8 +91,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: ls1-lis
+    env:
+      - VES_IO_SITENAME: ves-io-ls1-lis
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -96,8 +108,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: tn2-lon
+    env:
+      - VES_IO_SITENAME: ves-io-tn2-lon
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -111,8 +125,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: me1-mel
+    env:
+      - VES_IO_SITENAME: ves-io-me1-mel
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -126,8 +142,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: ny8-nyc
+    env:
+      - VES_IO_SITENAME: ves-io-ny8-nyc
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -141,8 +159,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: os1-osa
+    env:
+      - VES_IO_SITENAME: ves-io-os1-osa
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -156,8 +176,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: pa2-par
+    env:
+      - VES_IO_SITENAME: ves-io-pa2-par
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -171,8 +193,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: sv10-sjc
+    env:
+      - VES_IO_SITENAME: ves-io-sv10-sjc
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -186,8 +210,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: wes-sea
+    env:
+      - VES_IO_SITENAME: ves-io-wes-sea
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -201,8 +227,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: sg3-sin
+    env:
+      - VES_IO_SITENAME: ves-io-sg3-sin
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -216,8 +244,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: sto6-sto
+    env:
+      - VES_IO_SITENAME: ves-io-sto6-sto
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -231,8 +261,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: sy5-syd
+    env:
+      - VES_IO_SITENAME: ves-io-sy5-syd
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -246,8 +278,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: ty8-tky
+    env:
+      - VES_IO_SITENAME: ves-io-ty8-tky
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -261,8 +295,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: tr2-tor
+    env:
+      - VES_IO_SITENAME: ves-io-tr2-tor
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -276,8 +312,10 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
-    headers:
-      - x-volterra-location: pa4-par
+    env:
+      - VES_IO_SITENAME: ves-io-pa4-par
+    env_policy_match: AND
+    headers: []
     header_policy_match: AND
     ip_version: 4
     reply_scripts:
@@ -291,6 +329,8 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
+    env: []
+    env_policy_match: AND
     headers: []
     header_policy_match: AND
     ip_version: 4

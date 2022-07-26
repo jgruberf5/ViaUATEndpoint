@@ -1,6 +1,7 @@
 import logging
 import ipaddress
 import json
+import os
 import re
 import validators
 
@@ -113,7 +114,56 @@ def get_matched_policy_hash(request, policy_hashes, policies):
     for policy_hash in policy_hashes:
         policy_match_score = 0
         policy = policies[policy_hash]
-        # Affirm header matching..
+        # env matching is present and value
+        env_match = False
+        if 'env' in policy and policy['env']:
+            required_to_match = 0
+            if 'env_policy_match' not in policy:
+                policy['env_policy_match'] = 'and'
+            if policy['env_policy_match'].lower() == 'and':
+                required_to_match = len(policy['env'])
+            elif policy['env_policy_match'].lower() == 'or':
+                required_to_match = 1
+            else:
+                try:
+                    required_to_match = int(policy['env_match_policy'])
+                except:
+                    pass
+            if required_to_match:
+                env_match_scrore = 0
+                number_envs_matching = 0
+                # we have to interate through them all
+                # in case the match with the higher
+                # precise matching is latter in the match
+                for env in policy['env']:
+                    env_name = list(env.keys())[0]
+                    env_match_value = env[env_name]
+                    if os.getenv(env_name, None):
+                        logger.debug('checking env %s match for %s',
+                                     env, env_match_value)
+                        if env_match_value.lower() == 'any':
+                            logger.debug('env: %s matched any', env)
+                            number_envs_matching = number_envs_matching + 1
+                            env_match_scrore = env_match_scrore + 1
+                        elif env_match_value == os.getenv(env_name):
+                            logger.debug('env: %s matched exact', env)
+                            number_envs_matching = number_envs_matching + 1
+                            env_match_scrore = env_match_scrore + 3
+                        else:
+                            try:
+                                p = re.compile(env_match_value)
+                                if p.match(os.getenv(env_name)):
+                                    logger.debug('env: %s matched regex', env)
+                                    number_envs_matching = number_envs_matching + 1
+                                    env_match_scrore = env_match_scrore + 2
+                            except:
+                                pass
+                if number_envs_matching >= required_to_match:
+                    env_match = True
+                    policy_match_score = policy_match_score + env_match_scrore
+        else:
+            # No match critera for env, so match all..
+            env_match = True
         # Header matching is presence and value
         header_match = False
         if 'headers' in policy and policy['headers']:
@@ -200,7 +250,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                         policy_match_score = policy_match_score + 2
                 except:
                     pass
-        if header_match and method_match and path_regex_match:
+        if env_match and header_match and method_match and path_regex_match:
             logger.debug('policy with hash: %s has a match score of %d',
                          policy_hash, policy_match_score)
             if policy_match_score > most_specific_policy_match_score:

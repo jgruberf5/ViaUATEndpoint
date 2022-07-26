@@ -133,12 +133,22 @@ class Policy(BaseModel):
         default='ALL',
         title='Client CIDR',
         description='The IPv4 or IPv6 CIDR to match the client request')
+    env: Union[List[Mapping[str, str]], None] = Field (
+        default=[],
+        title='ENV Variables',
+        description='Environment variables to match'
+    )
+    env_match_policy: Union[str, None] = Field(
+        default='AND',
+        title='ENV Matching Policy',
+        description='How to match variables can be AND, OR, or number to match as a string'
+    )
     method: Union[str, None] = Field(
         default='ALL',
         title='HTTP Request Method',
         description='The HTTP request method to match the request')
     headers: Union[List[Mapping[str, str]], None] = Field(
-        default='NONE',
+        default=[],
         title='HTTP headers and values to match',
         description='List of HTTP headers and values to match for the request')
     header_match_policy: Union[str, None] = Field(
@@ -162,6 +172,16 @@ class PolicyCreate(BaseModel):
         default='ALL',
         title='Client CIDR',
         description='The IPv4 or IPv6 CIDR to match the client request')
+    env: Union[List[Mapping[str, str]], None] = Field (
+        default=[],
+        title='ENV Variables',
+        description='Environment variables to match'
+    )
+    env_match_policy: Union[str, None] = Field(
+        default='AND',
+        title='ENV Matching Policy',
+        description='How to match variables can be AND, OR, or number to match as a string'
+    )
     method: Union[str, None] = Field(
         default='ALL',
         title='HTTP Request Method',
