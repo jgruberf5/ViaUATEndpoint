@@ -7,6 +7,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: ams9-ams
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
@@ -22,6 +23,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: dc12-ash
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
@@ -36,6 +38,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: dal3-dal
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
@@ -50,6 +53,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: fr4-fra
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
@@ -64,6 +68,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: hk2-hkg
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
@@ -93,6 +98,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: tn2-lon
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
@@ -101,1147 +107,182 @@ policies:
         direct_response_mime_type: 'application/json'
         direct_response_body: '{"method":"get","config":"london_service"}'
         direct_response_body_encoding: NONE
-  - id: 49
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: me1-mel
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_get"}'
-        direct_response_body_encoding: NONE
-  - id: 50
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: me1-mel
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_post"}'
-        direct_response_body_encoding: NONE
-  - id: 51
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: me1-mel
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_put"}'
-        direct_response_body_encoding: NONE
-  - id: 52
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: me1-mel
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 53
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: me1-mel
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_head"}'
-        direct_response_body_encoding: NONE
-  - id: 54
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: me1-mel
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 55
+  - id: 7
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: me1-mel
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"melbourne_generic"}'
+        direct_response_body: '{"method":"get","config":"melbourne_service"}'
         direct_response_body_encoding: NONE
-  - id: 56
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: ny8-nyc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_get"}'
-        direct_response_body_encoding: NONE
-  - id: 57
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: ny8-nyc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_post"}'
-        direct_response_body_encoding: NONE
-  - id: 58
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: ny8-nyc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_put"}'
-        direct_response_body_encoding: NONE
-  - id: 59
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: ny8-nyc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 60
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: ny8-nyc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_head"}'
-        direct_response_body_encoding: NONE
-  - id: 61
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: ny8-nyc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 62
+  - id: 8
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: ny8-nyc
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"newyork_generic"}'
+        direct_response_body: '{"method":"get","config":"newyork_service"}'
         direct_response_body_encoding: NONE
-  - id: 63
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: os1-osa
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_get"}'
-        direct_response_body_encoding: NONE
-  - id: 64
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: os1-osa
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_post"}'
-        direct_response_body_encoding: NONE
-  - id: 65
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: os1-osa
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_put"}'
-        direct_response_body_encoding: NONE
-  - id: 66
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: os1-osa
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 67
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: os1-osa
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_head"}'
-        direct_response_body_encoding: NONE
-  - id: 68
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: os1-osa
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 69
+  - id: 9
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: os1-osa
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"osaka_generic"}'
+        direct_response_body: '{"method":"get","config":"osaka_service"}'
         direct_response_body_encoding: NONE
-  - id: 70
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: pa2-par
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_get"}'
-        direct_response_body_encoding: NONE
-  - id: 71
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: pa2-par
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_post"}'
-        direct_response_body_encoding: NONE
-  - id: 72
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: pa2-par
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_put"}'
-        direct_response_body_encoding: NONE
-  - id: 73
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: pa2-par
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 74
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: pa2-par
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_head"}'
-        direct_response_body_encoding: NONE
-  - id: 75
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: pa2-par
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 76
+  - id: 10
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: pa2-par
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"paris_generic"}'
+        direct_response_body: '{"method":"get","config":"paris_service"}'
         direct_response_body_encoding: NONE
-  - id: 77
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: sv10-sjc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_get"}'
-        direct_response_body_encoding: NONE
-  - id: 78
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: sv10-sjc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_post"}'
-        direct_response_body_encoding: NONE
-  - id: 79
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: sv10-sjc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_put"}'
-        direct_response_body_encoding: NONE
-  - id: 80
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: sv10-sjc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 81
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: sv10-sjc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_head"}'
-        direct_response_body_encoding: NONE
-  - id: 82
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: sv10-sjc
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 83
+  - id: 11
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: sv10-sjc
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sanjose_generic"}'
+        direct_response_body: '{"method":"get","config":"sanjose_service"}'
         direct_response_body_encoding: NONE
-  - id: 84
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: wes-sea
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_get"}'
-        direct_response_body_encoding: NONE
-  - id: 85
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: wes-sea
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_post"}'
-        direct_response_body_encoding: NONE
-  - id: 86
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: wes-sea
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_put"}'
-        direct_response_body_encoding: NONE
-  - id: 87
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: wes-sea
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 88
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: wes-sea
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_head"}'
-        direct_response_body_encoding: NONE
-  - id: 89
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: wes-sea
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 90
+  - id: 12
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: wes-sea
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"seattle_generic"}'
+        direct_response_body: '{"method":"get","config":"seattle_service"}'
         direct_response_body_encoding: NONE
-  - id: 91
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: sg3-sin
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_get"}'
-        direct_response_body_encoding: NONE
-  - id: 92
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: sg3-sin
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_post"}'
-        direct_response_body_encoding: NONE
-  - id: 93
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: sg3-sin
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_put"}'
-        direct_response_body_encoding: NONE
-  - id: 94
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: sg3-sin
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 95
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: sg3-sin
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_head"}'
-        direct_response_body_encoding: NONE
-  - id: 96
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: sg3-sin
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 97
+  - id: 13
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: sg3-sin
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"singapore_generic"}'
+        direct_response_body: '{"method":"get","config":"singapore_service}'
         direct_response_body_encoding: NONE
-  - id: 98
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: sto6-sto
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_get"}'
-        direct_response_body_encoding: NONE
-  - id: 99
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: sto6-sto
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_post"}'
-        direct_response_body_encoding: NONE
-  - id: 100
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: sto6-sto
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_put"}'
-        direct_response_body_encoding: NONE
-  - id: 101
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: sto6-sto
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 102
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: sto6-sto
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_head"}'
-        direct_response_body_encoding: NONE
-  - id: 103
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: sto6-sto
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 104
+  - id: 14
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: sto6-sto
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"stockholm_generic"}'
+        direct_response_body: '{"method":"get","config":"stockholm_service"}'
         direct_response_body_encoding: NONE
-  - id: 105
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: sy5-syd
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_get"}'
-        direct_response_body_encoding: NONE
-  - id: 106
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: sy5-syd
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_post"}'
-        direct_response_body_encoding: NONE
-  - id: 107
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: sy5-syd
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_put"}'
-        direct_response_body_encoding: NONE
-  - id: 108
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: sy5-syd
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 109
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: sy5-syd
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_head"}'
-        direct_response_body_encoding: NONE
-  - id: 110
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: sy5-syd
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 111
+  - id: 15
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: sy5-syd
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"sydney_generic"}'
+        direct_response_body: '{"method":"get","config":"sydney_service"}'
         direct_response_body_encoding: NONE
-  - id: 112
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: ty8-tky
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_get"}'
-        direct_response_body_encoding: NONE
-  - id: 113
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: ty8-tky
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_post"}'
-        direct_response_body_encoding: NONE
-  - id: 114
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: ty8-tky
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_put"}'
-        direct_response_body_encoding: NONE
-  - id: 115
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: ty8-tky
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 116
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: ty8-tky
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_head"}'
-        direct_response_body_encoding: NONE
-  - id: 117
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: ty8-tky
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 118
+  - id: 16
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: ty8-tky
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"tokyo_generic"}'
+        direct_response_body: '{"method":"get","config":"tokyo_service"}'
         direct_response_body_encoding: NONE
-  - id: 119
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: GET
-    headers:
-      - x-volterra-location: tr2-tor
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_get"}'
-        direct_response_body_encoding: NONE
-  - id: 120
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: POST
-    headers:
-      - x-volterra-location: tr2-tor
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_post"}'
-        direct_response_body_encoding: NONE
-  - id: 121
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PUT
-    headers:
-      - x-volterra-location: tr2-tor
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_put"}'
-        direct_response_body_encoding: NONE
-  - id: 122
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: PATCH
-    headers:
-      - x-volterra-location: tr2-tor
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_patch"}'
-        direct_response_body_encoding: NONE
-  - id: 123
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: HEAD
-    headers:
-      - x-volterra-location: tr2-tor
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_head"}'
-        direct_response_body_encoding: NONE
-  - id: 124
-    src_cidr:  'ALL'
-    path_re_match: 'ANY'
-    method: DELETE
-    headers:
-      - x-volterra-location: tr2-tor
-    ip_version: 4
-    reply_scripts:
-      - delay_ms: 0
-        repeat: 0
-        action: direct_response
-        direct_response_status_code: 200
-        direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_delete"}'
-        direct_response_body_encoding: NONE
-  - id: 125
+  - id: 17
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
     headers:
       - x-volterra-location: tr2-tor
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
-        direct_response_body: '{"method":"get","config":"toronto_generic"}'
+        direct_response_body: '{"method":"get","config":"toronto_service"}'
+        direct_response_body_encoding: NONE
+  - id: 18
+    src_cidr:  'ALL'
+    path_re_match: 'ALL'
+    method: ANY
+    headers: []
+    header_policy_match: AND
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 0
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"global_generic_service"}'
         direct_response_body_encoding: NONE
