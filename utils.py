@@ -119,6 +119,8 @@ def get_matched_policy_hash(request, policy_hashes, policies):
         if 'headers' in policy and policy['headers']:
             # If multiple headers are present, all must match.
             required_to_match = 0
+            if 'header_match_policy' not in policy:
+                policy['header_match_policy'] = 'and'
             if policy['header_match_policy'].lower() == 'and':
                 required_to_match = len(policy['headers'])
             elif policy['header_match_policy'].lower() == 'or':
