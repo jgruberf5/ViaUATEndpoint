@@ -69,6 +69,8 @@ def run_reply_scripts(policy_match_hash, policies, request, response):
     for i, script in enumerate(
             policies[policy_match_hash]['reply_scripts']):
         script_hash = str(i)
+        if 'repeat' not in script:
+            script['repeat'] = 0
         if script['repeat'] == 0:
             # run a always matching reply_script
             logger.info("running continue output script")
