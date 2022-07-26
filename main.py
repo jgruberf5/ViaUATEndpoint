@@ -3,8 +3,10 @@
 # main entry point for ViaUATEndpoint
 import json
 import logging
-import logging_config
+import os
+from turtle import st
 
+import logging_config
 import config
 import runners
 import utils
@@ -316,6 +318,13 @@ async def reload_config_from_file(config_file: str = None, reload_timer: int = 0
         reload_on_time(config.RELOAD_TIMER)
     return Response(content=json.dumps({'config_file': config.CONFIG_FILE}),
                     status_code=200, media_type='application/json')
+
+
+@app.get('/enviornment/', response_class=JSONResponse)
+async def dump_evironment():
+    return Response(content=json.dumps(dict(os.environ)),
+                    status_code=200,
+                    media_type='application/json')
 
 
 @app.get('/policies/',
