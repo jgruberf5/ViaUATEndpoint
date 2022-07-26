@@ -233,7 +233,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
             header_match = True
         # Affirm method
         method_match = False
-        if policy['method'] == 'ALL':
+        if policy['method'] == 'ALL' or policy['method'] == 'ANY':
             method_match = True
             policy_match_score = policy_match_score + 1
         elif policy['method'] == request.method:
@@ -257,10 +257,10 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                         policy_match_score = policy_match_score + 2
                 except:
                     pass
-        logger.debug(
-            'policy %s result: env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
-            policy_hash, env_match, header_match, method_match, path_regex_match, policy_match_score
-        )
+        #logger.debug(
+        #    'policy %s result: env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
+        #    policy_hash, env_match, header_match, method_match, path_regex_match, policy_match_score
+        #)
         if env_match and header_match and method_match and path_regex_match:
             logger.debug('policy with hash: %s has a match score of %d',
                          policy_hash, policy_match_score)
