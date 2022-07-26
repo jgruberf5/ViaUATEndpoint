@@ -87,7 +87,7 @@ class RunScript(BaseModel):
     def action_needs_to_be_in_supported_actions(cls, v):
         if v not in ACTIONS:
             raise HTTPException(status_code=400,
-                                detail='body_encoding must be in %s' % ACTIONS)
+                                detail='action must be in %s' % ACTIONS)
         return v
 
     @validator('direct_response_status_code')
@@ -95,7 +95,7 @@ class RunScript(BaseModel):
         if v not in VALID_HTTP_STATUS_CODES:
             raise HTTPException(
                 status_code=400,
-                detail='status_code must be a valid HTTP status code')
+                detail='direct_response_status_code must be a valid HTTP status code')
         return v
 
     @validator('direct_response_mime_type')
@@ -103,14 +103,14 @@ class RunScript(BaseModel):
         if ('/' not in v) or (v.find('/') < 1):
             raise HTTPException(
                 status_code=400,
-                detail='mime_type must include a category and type')
+                detail='direct_response_mime_type must include a category and type')
         return v
 
     @validator('direct_response_body_encoding')
     def body_encoding_must_be_none_or_base64(cls, v):
         if v not in ['NONE', 'BASE64']:
             raise HTTPException(status_code=400,
-                                detail='body_encoding must be NONE or BASE64')
+                                detail='direct_response_body_encoding must be NONE or BASE64')
         return v
 
     @validator('redirect_status_code')
@@ -304,7 +304,8 @@ async def set_level(level: str = 'INFO'):
                                 detail='Invalid level: %s' % level)
     else:
         level = logger.getEffectiveLevel()
-    return Response(content=json.dumps({'log_level': level}), status_code=200)
+    return Response(content=json.dumps({'log_level': level}),
+                    status_code=200, media_type='application/json')
 
 
 @app.get('/config/', response_class=JSONResponse)
@@ -313,7 +314,8 @@ async def reload_config_from_file(config_file: str = None, reload_timer: int = 0
     last_id, policies = config.load_policies(config_file, reload_timer)
     if reload_timer > 0:
         reload_on_time(config.RELOAD_TIMER)
-    return Response(content=json.dumps({'config_file': config.CONFIG_FILE}), status_code=200)
+    return Response(content=json.dumps({'config_file': config.CONFIG_FILE}),
+                    status_code=200, media_type='application/json')
 
 
 @app.get('/policies/',

@@ -76,7 +76,7 @@ policies:
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
         direct_response_body: '{"method":"get","config":"hongkong_service"}'
-        direct_response_body_encoding: NON
+        direct_response_body_encoding: NONE
   - id: 5
     src_cidr:  'ALL'
     path_re_match: 'ALL'
