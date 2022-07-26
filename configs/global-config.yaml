@@ -78,6 +78,7 @@ policies:
     method: ANY
     headers:
       - x-volterra-location: ls1-lis
+    header_policy_match: AND
     ip_version: 4
     reply_scripts:
       - delay_ms: 0
