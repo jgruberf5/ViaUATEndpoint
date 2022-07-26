@@ -130,7 +130,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                 except:
                     pass
             if env_required_to_match:
-                logger.debug('need to match at %d envs', env_required_to_match)
+                # logger.debug('need to match at %d envs', env_required_to_match)
                 env_match_scrore = 0
                 number_envs_matching = 0
                 # we have to interate through them all
@@ -184,7 +184,7 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                 except:
                     pass
             if headers_required_to_match:
-                logger.debug('need to match at %d headers', env_required_to_match)
+                # logger.debug('need to match at %d headers', env_required_to_match)
                 header_match_scrore = 0
                 number_headers_matching = 0
                 # avoid looping over and over
@@ -257,6 +257,10 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                         policy_match_score = policy_match_score + 2
                 except:
                     pass
+        logging.debug(
+            'env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
+            env_match, header_match, method_match, path_regex_match, policy_match_score
+        )
         if env_match and header_match and method_match and path_regex_match:
             logger.debug('policy with hash: %s has a match score of %d',
                          policy_hash, policy_match_score)
