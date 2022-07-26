@@ -276,6 +276,21 @@ policies:
     src_cidr:  'ALL'
     path_re_match: 'ALL'
     method: ANY
+    headers:
+      - x-volterra-location: pa4-par
+    header_policy_match: AND
+    ip_version: 4
+    reply_scripts:
+      - delay_ms: 0
+        action: direct_response
+        direct_response_status_code: 200
+        direct_response_mime_type: 'application/json'
+        direct_response_body: '{"method":"get","config":"paris_service"}'
+        direct_response_body_encoding: NONE
+  - id: 19
+    src_cidr:  'ALL'
+    path_re_match: 'ALL'
+    method: ANY
     headers: []
     header_policy_match: AND
     ip_version: 4
