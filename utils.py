@@ -158,6 +158,8 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                                     env_match_scrore = env_match_scrore + 2
                             except:
                                 pass
+                    else:
+                        logging.debug('env %s in policy not found in environment', env_name)
                 if number_envs_matching >= required_to_match:
                     env_match = True
                     policy_match_score = policy_match_score + env_match_scrore
@@ -218,6 +220,9 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                                     header_match_scrore = header_match_scrore + 2
                             except:
                                 pass
+                    else:
+                        logger.debug(
+                            'header %s in policy not found in request', header_name)
                 if number_headers_matching >= required_to_match:
                     header_match = True
                     policy_match_score = policy_match_score + header_match_scrore
