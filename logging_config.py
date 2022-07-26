@@ -3,8 +3,8 @@ import logging
 from typing import Dict,Any
 from logging.config import dictConfig
 
+from const import DEFAULT_LOG_LEVEL
 
-DEFAULT_LOG_LEVEL:str = 'INFO'
 FORMAT: str = "%(levelprefix)s %(message)s"
 
 LOGGING_CONFIG: Dict[str, Any] = {
@@ -29,7 +29,11 @@ LOGGING_CONFIG: Dict[str, Any] = {
     },
 }
 
+logger = None
 
 def init_logging():
-    dictConfig(LOGGING_CONFIG)
-    return logging.getLogger("viauatdemo")
+    global logger
+    if not logger:
+        dictConfig(LOGGING_CONFIG)
+        logger = logging.getLogger("viauatdemo")
+    return logger

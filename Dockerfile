@@ -7,8 +7,13 @@ RUN adduser worker
 
 COPY ./static /app/static
 COPY ./config.yaml /app/config.yaml
-COPY ./main.py /app/main.py
+COPY ./config.py /app/config.py
+COPY ./const.py /app/const.py
 COPY ./logging_config.py /app/logging_config.py
+COPY ./main.py /app/main.py
+COPY ./runners.py /app/runners.py
+COPY ./timer.py /app/timer.py
+COPY ./utils.py /app/utils.py
 
 RUN chown -R worker /app
 
