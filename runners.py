@@ -2,10 +2,12 @@ import base64
 import json
 import logging
 import time
+import httpx
 import urllib.parse as urllibparse
 
+from starlette.background import BackgroundTask
 from fastapi import Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 logger = logging.getLogger("viauatdemo")
 
@@ -27,6 +29,8 @@ def run_script(script, request, response):
         return run_redirect(script, request, response)
     if script['action'] == 'serve_local':
         return run_serve_local(script, request, response)
+    if script['action'] == 'proxy':
+        return proxy(script, request, response)
     return Response(content='invalid action in run script',
                     status_code=400,
                     media_type='text/plain')
@@ -57,6 +61,19 @@ def run_redirect(script, request, response):
 def run_serve_local(script, request, response):
     return FileResponse(script['serve_local_file_path'],
                         headers=response.headers)
+
+
+def proxy(script, request, response):
+    client = httpx.Client(verify=False)
+    headers = dict(request.headers)
+    proxy_url = urllibparse.urlsplit(script['proxy_url'])
+    headers['host'] = proxy_url.netloc
+    req = client.build_request(
+        request.method,
+        script['proxy_url'])
+    rep = client.send(req)
+    return StreamingResponse(
+        rep.aiter_text())
 
 
 def zero_out_runs(policy_hash: str, policies):

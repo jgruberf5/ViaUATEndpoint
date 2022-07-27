@@ -53,7 +53,7 @@ class RunScript(BaseModel):
         default='direct_response',
         title='Script action',
         description=
-        'What action to take: direct_response, redirect or serve_local')
+        'What action to take: direct_response, redirect, serve_local, or proxy')
     direct_response_status_code: Union[int, None] = Field(
         default=200,
         title='HTTP response status code',
@@ -84,6 +84,11 @@ class RunScript(BaseModel):
         default='NONE',
         title='Serve Local File',
         description='Local file path for the file to serve for the request')
+    proxy_url: Union[str, None] = Field(
+        default='NONE',
+        title='Proxy URL',
+        description='Proxy a request to the URL and return its content to the request'
+    )
 
     @validator('action')
     def action_needs_to_be_in_supported_actions(cls, v):
@@ -123,6 +128,13 @@ class RunScript(BaseModel):
                 detail='redirect_status_code should be 301,302 or 307')
         return v
 
+    @validator('proxy_url')
+    def proxy_url_must_be_valid_url(cls, v):
+        if not isinstance(validators.url(v), validators.ValidationFailure):
+            raise HTTPException(
+                status_code=400,
+                detail='proxy_url must be a valid URL'
+            )
 
 class Policy(BaseModel):
     id: Union[int, None] = Field(
