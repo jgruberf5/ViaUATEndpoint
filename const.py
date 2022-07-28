@@ -8,14 +8,14 @@ DEFAULT_CONFIG_FILE: str = "%s/config.yaml" % os.path.dirname(
 DEFAULT_POLICIES: List[Any] = [{
     'ip_version': 4,
     'src_cidr': 'ALL',
-    'day_of_week': 'SUMTWRFSA'
-    'start_time': '00:00:00'
-    'stop_time': '23:59:59'
-    'env': []
+    'day_of_week': 'SUMTWRFSA',
+    'start_time': '00:00:00',
+    'stop_time': '23:59:59',
+    'env': [],
     'method': 'ANY',
-    'headers': []
-    'path_re_match': 'ALL'
-    'query': []
+    'headers': [],
+    'path_re_match': 'ALL',
+    'query': [],
     'reply_scripts': [{
         'delay_ms': 0,
         'repeat': 0,
