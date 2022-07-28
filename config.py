@@ -70,7 +70,7 @@ def load_policies(config_file=None, reload_timer=0):
     last_id: int = 0
     if config_file:
         if utils.is_url(config_file) or os.path.exists(config_file):
-            CONFIG_FILE = config_file
+            CONFIG_FILE = utils.sub_env_variables(config_file)
     if reload_timer > 0:
         RELOAD_TIMER = reload_timer
     if utils.is_url(CONFIG_FILE):

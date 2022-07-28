@@ -36,3 +36,4 @@ VALID_HTTP_STATUS_CODES: List[int] = [
     501, 502, 503, 504, 506, 508, 510, 511
 ]
 ACTIONS: List[str] = ['direct_response', 'redirect', 'serve_local']
+VALID_DAYS_OF_WEEK = ['SU', 'M', 'T', 'W', 'R', 'F', 'SA']

@@ -2,12 +2,16 @@ debug: true
 reload_timer: 10
 policies:
   - id: 0
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: '^/get/.*$'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: GET
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query: []
     reply_scripts:
       - delay_ms: 0
         repeat: 0
@@ -17,12 +21,16 @@ policies:
         direct_response_body: '{"method":"get","config":"local_get_default"}'
         direct_response_body_encoding: NONE
   - id: 1
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: '^\/post\/.*$'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: POST
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query: []
     reply_scripts:
       - delay_ms: 0
         repeat: 0
@@ -32,12 +40,16 @@ policies:
         direct_response_body: '{"method":"post","config":"local_post_default"}'
         direct_response_body_encoding: NONE
   - id: 2
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: '^\/put\/.*$'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: PUT
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query: []
     reply_scripts:
       - delay_ms: 0
         repeat: 0
@@ -47,12 +59,16 @@ policies:
         direct_response_body: '{"method":"put","config":"local_put_default"}'
         direct_response_body_encoding: NONE
   - id: 3
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: '^\/patch\/.*$'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: PATCH
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query: []
     reply_scripts:
       - delay_ms: 0
         repeat: 0
@@ -62,12 +78,16 @@ policies:
         direct_response_body: '{"method":"patch","config":"local_patch_default"}'
         direct_response_body_encoding: NONE
   - id: 4
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: '^\/head\/.*$'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: HEAD
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query: []
     reply_scripts:
       - delay_ms: 0
         repeat: 0
@@ -77,12 +97,16 @@ policies:
         direct_response_body: '{"method":"head","config":"local_head_default"}'
         direct_response_body_encoding: NONE
   - id: 5
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: '^\/delete\/.*$'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: DELETE
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query: []
     reply_scripts:
       - delay_ms: 0
         repeat: 0
@@ -92,15 +116,20 @@ policies:
         direct_response_body: '{"method":"delete","config":"local_delete_default"}'
         direct_response_body_encoding: NONE
   - id: 6
+    ip_version: 4
     src_cidr:  'ALL'
-    path_re_match: 'ALL'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
     method: GET
     headers: []
-    env: []
-    ip_version: 4
+    path_re_match: 'ALL'
+    query:
+      - fail: 'ANY'
     reply_scripts:
       - delay_ms: 0
-        repeat: 5
+        repeat: 1
         action: direct_response
         direct_response_status_code: 200
         direct_response_mime_type: 'application/json'
@@ -109,7 +138,23 @@ policies:
       - delay_ms: 2000
         repeat: 1
         action: direct_response
-        direct_response_status_code: 200
+        direct_response_status_code: 500
         direct_response_mime_type: 'application/json'
         direct_response_body: '{"method":"get","config":"local_default_error"}'
         direct_response_body_encoding: NONE
+  - id: 7
+    ip_version: 4
+    src_cidr:  'ALL'
+    day_of_week: SUMTWRFSA
+    start_time: '00:00:00'
+    stop_time: '23:59:59'
+    env: []
+    method: GET
+    headers: []
+    path_re_match: '^/proxy/.*$'
+    query: []
+    reply_scripts:
+      - delay_ms: 0
+        repeat: 0
+        action: proxy
+        proxy_url: 'https://raw.githubusercontent.com/jgruberf5/ViaUATEndpoint/main/configs.yaml'

@@ -1,13 +1,26 @@
-import logging
 import ipaddress
 import json
 import os
 import re
 import validators
 
+import urllib.parse as urllibparse
+
+from datetime import datetime
+from datetime import time
+
 import logging_config
+import const
 
 logger = logging_config.init_logging()
+
+
+def sub_env_variables(val: str):
+    for m in re.findall('\{\{(.*?)\}\}', val):
+        env_val = os.getenv(m.strip(), None)
+        if env_val:
+            val = val.replace('{{%s}}' % m, env_val)
+    return val
 
 
 def resolve_xff_header(val: str):
@@ -34,12 +47,62 @@ def is_url(v):
         return False
     return True
 
+def is_hhmmss(v):
+    p = re.compile('^([0-2])([0-4]):([0-5])([0-9]):([0-5])([0-9])$')
+    if p.match(v):
+        return True
+    return False
+
+
+def return_days_of_week(daysofweekstr):
+    days = []
+    for d in const.VALID_DAYS_OF_WEEK:
+        if daysofweekstr.find(d) >= 0:
+            days.append(d)
+    return days
+
+
+def is_today(daysofweekstr):
+    if daysofweekstr.lower() == 'any':
+        return True
+    days = return_days_of_week(daysofweekstr)
+    day = datetime.today().weekday()
+    if day == 0 and 'M' in days:
+        return True
+    if day == 1 and 'T' in days:
+        return True
+    if day == 2 and 'W' in days:
+        return True
+    if day == 3 and 'R' in days:
+        return True
+    if day == 4 and 'F' in days:
+        return True
+    if day == 5 and 'SA' in days:
+        return True
+    if day == 6 and 'SU' in days:
+        return True
+    return False
+
+
+def is_between_time(start_time, end_time):
+    start = time(int(start_time[0:2]), int(start_time[3:5]), int(start_time[6:]))
+    end = time(int(end_time[0:2]), int(end_time[3:5]), int(end_time[6:]))
+    current = datetime.now().time()
+    return start <= current <= end
+
 
 def get_policy_hash(policy: dict):
     return "%d-%s-%s" % (policy['id'], policy['src_cidr'], policy['method'])
 
 
 def get_client_ip_match(client_ips, policies):
+    """
+    Qualify this request by its source IP address CIDR: policy src_cidr.
+
+    This is the highest pass of the policies to limit policy processing
+    to just a list of policies which match a request client against
+    a policy src_cidr.
+    """
     client_match_policies = {'ALL': [], 'CIDR': {'hosts': 0, 'hashes': []}}
     for policy_hash in policies:
         policy = policies[policy_hash]
@@ -109,11 +172,85 @@ def get_client_ip_match(client_ips, policies):
 
 
 def get_matched_policy_hash(request, policy_hashes, policies):
+    """
+    Given a request, match the most specifically defined policy.
+
+    Policies contain match properties for:
+
+        day_of_week:   string of the form [SU][M][T][W][R][F][SA]
+                       which is use to match policies to specific
+                       days of the week they would apply.
+
+                       i.e. for a policy which runs on Sunday,
+                       Tuesday, and Friday, the policy day_of_week
+                       would look like SUTF
+
+        time:
+           start_time: the start time they policy begins to apply
+           stop_time:  the stop time the policy ceases to apply
+
+                       Both times are in 24hr format HH:MM:ss
+
+        env:           the policy would match if a specific environment
+                       variable is defined and optionally have its
+                       value matched exactly or by regular expression.
+
+                       env is a list of name/value pairs like:
+
+                       VES_IO_SITENAME: ves-io-pa4-par
+                       HOSTNAME: '^wwwapp.*'
+                       PRODENV: 'ANY'
+
+        headers:       the policy would match if a specific request
+                       header is defined and optionally have its
+                       value matched exactly or by regular expression.
+
+                       headers is a list of name/value pairs like:
+
+                       Host: www.demo.com
+                       User-Agent: '.*Linux.*'
+                       X-App-Tester: 'ANY'
+
+        method:        the policy would match if the request method is
+                       defined as 'ANY', 'GET', 'POST' 'PUT', 'PATCH',
+                       'HEAD', 'OPTIONS', 'DELETE'
+
+        query:         the policy would match if a specific request
+                       query variable is present and optionally have its
+                       value matched exactly or by regular expression.
+
+                       query is a list of name/value pairs like:
+
+    """
     most_specific_policy_hash = None
     most_specific_policy_match_score = 0
     for policy_hash in policy_hashes:
         policy_match_score = 0
         policy = policies[policy_hash]
+        # day matching
+        day_match = False
+        if 'day_of_week' in policy and policy['day_of_week']:
+            if policy['day_of_week'].lower() == 'any':
+                day_match = True
+            elif is_today(policy['day_of_week']):
+                day_match = True
+            else:
+                logger.debug('day_of_week %s present in policy, currently false.',
+                             policy['day_of_week'])
+        else:
+            day_match = True
+        # time_matching
+        time_match = False
+        if 'start_time' in policy and policy['start_time'] and \
+                         'stop_time' in policy and policy['stop_time']:
+            if is_between_time(policy['start_time'], policy['stop_time']):
+                time_match = True
+            else:
+                logger.debug(
+                    'start_time: %s stop_time: %s present in policy, currently false.',
+                    policy['start_time'], policy['stop_time'])
+        else:
+            time_match = True
         # env matching is present and value
         env_match = False
         if 'env' in policy and policy['env']:
@@ -257,11 +394,68 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                         policy_match_score = policy_match_score + 2
                 except:
                     pass
+
+        # Query variable matching is presence and value
+        query_match = False
+        if 'query' in policy and policy['query']:
+            # If multiple headers are present, all must match.
+            query_required_to_match = 0
+            if 'query_match_policy' not in policy:
+                policy['query_match_policy'] = 'and'
+            if policy['query_match_policy'].lower() == 'and':
+                query_required_to_match = len(policy['query'])
+            elif policy['query_match_policy'].lower() == 'or':
+                query_required_to_match = 1
+            else:
+                try:
+                    query_required_to_match = int(policy['query_match_policy'])
+                except:
+                    pass
+            if query_required_to_match:
+                query_match_scrore = 0
+                number_query_matching = 0
+                # avoid looping over and over
+                found_query = urllibparse.parse_qs(str(request.query_params))
+                # we have to interate through them all
+                # in case the match with the higher
+                # precise matching is latter in the match
+                for query in policy['query']:
+                    query_name = list(query.keys())[0]
+                    query_match_value = query[query_name]
+                    if query_name in found_query:
+                        if query_match_value.lower() == 'any':
+                            logger.debug('query: %s matched any', query_name)
+                            number_query_matching = number_query_matching + 1
+                            query_match_scrore = query_match_scrore + 1
+                        elif query_match_value in found_query[query_name]:
+                            logger.debug('query: %s matched exact', query_name)
+                            number_query_matching = number_query_matching + 1
+                            query_match_scrore = query_match_scrore + 3
+                        else:
+                            try:
+                                p = re.compile(query_match_value)
+                                for val in found_query[query_name]:
+                                    if p.match(val):
+                                        logger.debug('query: %s matched regex', query_name)
+                                        number_query_matching = number_query_matching + 1
+                                        query_match_scrore = query_match_scrore + 2
+                            except:
+                                pass
+                    else:
+                        logger.debug(
+                            'query %s in policy not found in request', query_name)
+                if number_query_matching >= query_required_to_match:
+                    query_match = True
+                    policy_match_score = policy_match_score + query_match_scrore
+        else:
+            # No match critera for query, so match all..
+            query_match = True
         #logger.debug(
-        #    'policy %s result: env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
-        #    policy_hash, env_match, header_match, method_match, path_regex_match, policy_match_score
+        #    'policy %s result: day_match: %s time_match: %s env_match: %s header_match: %s method_match: %s path_regex_match: %s score %d',
+        #    policy_hash, day_match, time_match, env_match, header_match, method_match, path_regex_match, policy_match_score
         #)
-        if env_match and header_match and method_match and path_regex_match:
+        if day_match and time_match and env_match and header_match and \
+                              method_match and path_regex_match and query_match:
             logger.debug('policy with hash: %s has a match score of %d',
                          policy_hash, policy_match_score)
             if policy_match_score > most_specific_policy_match_score:

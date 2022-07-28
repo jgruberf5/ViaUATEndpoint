@@ -4,9 +4,9 @@
 import json
 import logging
 import os
-from turtle import st
 
 import logging_config
+import const
 import config
 import runners
 import utils
@@ -141,6 +141,10 @@ class Policy(BaseModel):
         default=0,
         title='Policy Id',
         description='Service generated reference to policy')
+    ip_version: Union[int, None] = Field(
+        default=4,
+        title='IP Version',
+        description='The IP version, 4 or 6, to match the request')
     src_cidr: Union[str, None] = Field(
         default='ALL',
         title='Client CIDR',
@@ -172,10 +176,31 @@ class Policy(BaseModel):
         default='ALL',
         title='Regular Expression',
         description='HTTP path regular expression match for the request')
-    ip_version: Union[int, None] = Field(
-        default=4,
-        title='IP Version',
-        description='The IP version, 4 or 6, to match the request')
+    query: Union[List[Mapping[str, str]], None] = Field (
+        default=[],
+        title='HTTP Query Variables',
+        description='HTTP query variables to match'
+    )
+    query_match_policy: Union[str, None] = Field(
+        default='AND',
+        title='Query Matching Policy',
+        description='How to match HTTP query variables can be AND, OR, or number to match as a string'
+    )
+    day_of_week: Union[str, None] = Field(
+        default='ANY',
+        title='Day of Week',
+        description='Day of the week to match policy can be ANY or [SU][M][T][W][R][F][SA] i.e. SUM for Sunday and Monday'
+    )
+    start_time: Union[str, None] = Field(
+        default=None,
+        title='Start Time',
+        description='Star time in HH:MM:ss 24 hour format',
+    )
+    stop_time: Union[str, None] = Field(
+        default=None,
+        title='Stop Time',
+        description='Stop time in HH:MM:ss 24 hour format',
+    )
     reply_scripts: List[RunScript] = DEFAULT_POLICIES[0]['reply_scripts']
 
 
@@ -184,6 +209,10 @@ class PolicyCreate(BaseModel):
         default='ALL',
         title='Client CIDR',
         description='The IPv4 or IPv6 CIDR to match the client request')
+    ip_version: Union[int, None] = Field(
+        default=4,
+        title='IP Version',
+        description='The IP version, 4 or 6, to match the request')
     env: Union[List[Mapping[str, str]], None] = Field (
         default=[],
         title='ENV Variables',
@@ -211,10 +240,31 @@ class PolicyCreate(BaseModel):
         default='ALL',
         title='Regular Expression',
         description='HTTP path regular expression match for the request')
-    ip_version: Union[int, None] = Field(
-        default=4,
-        title='IP Version',
-        description='The IP version, 4 or 6, to match the request')
+    query: Union[List[Mapping[str, str]], None] = Field (
+        default=[],
+        title='HTTP Query Variables',
+        description='HTTP query variables to match'
+    )
+    query_match_policy: Union[str, None] = Field(
+        default='AND',
+        title='Query Matching Policy',
+        description='How to match HTTP query variables can be AND, OR, or number to match as a string'
+    )
+    day_of_week: Union[str, None] = Field(
+        default='ANY',
+        title='Day of Week',
+        description='Day of the week to match policy can be ANY or [SU][M][T][W][R][F][SA] i.e. SUM for Sunday and Monday'
+    )
+    start_time: Union[str, None] = Field(
+        default=None,
+        title='Start Time',
+        description='Star time in HH:MM:ss 24 hour format',
+    )
+    stop_time: Union[str, None] = Field(
+        default=None,
+        title='Stop Time',
+        description='Stop time in HH:MM:ss 24 hour format',
+    )
     reply_scripts: List[RunScript] = DEFAULT_POLICIES[0]['reply_scripts']
 
     @validator('src_cidr')
@@ -259,6 +309,32 @@ class PolicyCreate(BaseModel):
             raise HTTPException(status_code=400,
                                 detail='ip_version must be 4 or 6')
         return v
+
+
+    @validator('day_of_week')
+    def day_of_week_should_have_at_least_one_day(cls, v):
+        if not utils.return_days_of_week(v):
+            raise HTTPException(
+                status_code=400,
+                detail='day_of_week must have at least one of %s in it' % const.VALID_DAYS_OF_WEEK)
+        return v
+
+
+    @validator('start_time')
+    def start_time_should_be_valid_24_hour_time(cls, v):
+        if not utils.is_hhmmss(v):
+            raise HTTPException(status_code=400,
+                                detail='start_time must be HH:MM:ss')
+        return v
+
+
+    @validator('stop_time')
+    def stop_time_should_be_valid_24_hour_time(cls, v):
+        if not utils.is_hhmmss(v):
+            raise HTTPException(status_code=400,
+                                detail='stop_time must be HH:MM:ss')
+        return v
+
 
 
 app = FastAPI(title='ViaUATEndpoint Application',
