@@ -428,7 +428,7 @@ async def reload_config_from_file(config_file: str = None, reload_timer: int = 0
                     status_code=200, media_type='application/json')
 
 
-@app.get('/enviornment/', response_class=JSONResponse)
+@app.get('/environment/', response_class=JSONResponse)
 async def dump_evironment():
     return Response(content=json.dumps(dict(os.environ)),
                     status_code=200,
