@@ -6,16 +6,16 @@ from typing import List, Any
 DEFAULT_CONFIG_FILE: str = "%s/config.yaml" % os.path.dirname(
     os.path.realpath(__file__))
 DEFAULT_POLICIES: List[Any] = [{
-    'src_cidr':
-    'ALL',
-    'path_re_match':
-    'ALL',
-    'method':
-    'ALL',
-    'header':
-    'NONE',
-    'ip_version':
-    4,
+    'ip_version': 4,
+    'src_cidr': 'ALL',
+    'day_of_week': 'SUMTWRFSA'
+    'start_time': '00:00:00'
+    'stop_time': '23:59:59'
+    'env': []
+    'method': 'ANY',
+    'headers': []
+    'path_re_match': 'ALL'
+    'query': []
     'reply_scripts': [{
         'delay_ms': 0,
         'repeat': 0,
@@ -27,7 +27,7 @@ DEFAULT_POLICIES: List[Any] = [{
 }]
 DEFAULT_LOG_LEVEL:str = 'INFO'
 VALID_HTTP_METHODS: List[str] = [
-    'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'OPTIONS'
+    'ANY', 'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'OPTIONS'
 ]
 VALID_HTTP_STATUS_CODES: List[int] = [
     100, 101, 102, 103, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303,
