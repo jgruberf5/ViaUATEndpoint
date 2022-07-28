@@ -15,7 +15,7 @@
               {
                   "name": "viauatapp",
                   "image": {
-                      "name": "focrensh/uat:latest",
+                      "name": "jgruberf5/viauatapp:latest",
                       "container_registry": {
                           "tenant": "f5-dataai-ybdklqyy",
                           "namespace": "pm",
