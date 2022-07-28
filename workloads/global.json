@@ -43,15 +43,7 @@
               ]
           },
           "deploy_options": {
-              "deploy_re_sites": {
-                  "site": [
-                      {
-                          "tenant": "ves-io",
-                          "namespace": "system",
-                          "name": "dal3-dal"
-                      }
-                  ]
-              }
+            "all_res": {}
           },
           "advertise_options": {
               "advertise_in_cluster": {
