@@ -37,7 +37,7 @@
                   {
                       "env_var": {
                           "name": "CONFIG_FILE",
-                          "value": "https://raw.githubusercontent.com/jgruberf5/ViaUATEndpoint/main/configs/trading-config.yaml"
+                          "value": "https://raw.githubusercontent.com/jgruberf5/ViaUATEndpoint/main/configs/global-config.yaml"
                       }
                   }
               ]
