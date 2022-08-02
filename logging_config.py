@@ -5,7 +5,7 @@ from logging.config import dictConfig
 
 from const import DEFAULT_LOG_LEVEL
 
-FORMAT: str = "%(levelprefix)s %(message)s"
+FORMAT: str = "%(asctime)s - %(levelprefix)s %(message)s"
 
 LOGGING_CONFIG: Dict[str, Any] = {
     "version": 1,
@@ -13,7 +13,7 @@ LOGGING_CONFIG: Dict[str, Any] = {
     "formatters": {
         "default": {
             "()": "uvicorn.logging.DefaultFormatter",
-            "fmt": "%(levelprefix)s %(message)s",
+            "fmt": FORMAT,
             "use_colors": None,
         },
     },
