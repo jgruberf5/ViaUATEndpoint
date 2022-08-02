@@ -136,8 +136,10 @@ def get_client_ip_match(client_ips, policies):
                                 client_match_policies['CIDR']['hashes'] = [
                                     policy_hash
                                 ]
-                    except:
-                        pass
+                    except Exception as ex:
+                        logger.debug(
+                            'IPv4 address: %s had issue testing in network %s: %s',
+                            client, policy['src_cidr'], ex)
                 elif client and policy['ip_version'] == 6:
                     try:
                         network = ipaddress.IPv6Network(policy['src_cidr'])
@@ -163,8 +165,10 @@ def get_client_ip_match(client_ips, policies):
                                 client_match_policies['CIDR']['hashes'] = [
                                     policy_hash
                                 ]
-                    except:
-                        pass
+                    except Exception as ex:
+                        logger.debug(
+                            'IPv6 address: %s had issue testing in network %s: %s',
+                            client, policy['src_cidr'], ex)
     if client_match_policies['CIDR']['hosts'] > 0:
         return client_match_policies['CIDR']['hashes']
     else:
