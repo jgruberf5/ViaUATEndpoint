@@ -12,6 +12,7 @@ import runners
 import utils
 
 from timer import Timer
+from deepdiff import DeepDiff
 
 import urllib.parse as urllibparse
 import validators
@@ -130,7 +131,8 @@ class RunScript(BaseModel):
 
     @validator('proxy_url')
     def proxy_url_must_be_valid_url(cls, v):
-        if not isinstance(validators.url(v), validators.ValidationFailure):
+        print(v)
+        if isinstance(validators.url(v), validators.ValidationFailure):
             raise HTTPException(
                 status_code=400,
                 detail='proxy_url must be a valid URL'
@@ -364,7 +366,10 @@ async def startup_event():
 
 def load_config():
     global last_id, policies
-    last_id, policies = config.intialize_config()
+    last_id, new_policies = config.intialize_config()
+    if DeepDiff(policies, new_policies, ignore_string_case=True):
+        logger.info('Configuration changed... loading new policies')
+        policies = new_policies
 
 
 def reload_on_time(seconds_between_reload):

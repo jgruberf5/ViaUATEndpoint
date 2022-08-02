@@ -7,25 +7,39 @@ import utils
 from const import DEFAULT_CONFIG_FILE, DEFAULT_LOG_LEVEL, DEFAULT_POLICIES
 
 CONFIG_FILE: str = DEFAULT_CONFIG_FILE
+LOG_LEVEL: str = DEFAULT_LOG_LEVEL
 RELOAD_TIMER: int = 0
 
 import logging_config
 
-logger = logging_config.init_logging()
+logger: logging.Logger = logging_config.init_logging()
+
 
 
 def read_config_from_local_file(filepath: str):
-    global RELOAD_TIMER
-    logger.info('reading configuration from file://%s', filepath)
+    global RELOAD_TIMER, LOG_LEVEL
+    logger.debug('reading configuration from file://%s', filepath)
     if os.path.exists(filepath):
         with open(filepath) as cf:
             try:
                 cf_obj = yaml.safe_load(cf)
                 if 'debug' in cf_obj and cf_obj['debug']:
-                    logger.setLevel(logging.DEBUG)
+                    if not LOG_LEVEL == 'DEBUG':
+                        LOG_LEVEL = 'DEBUG'
+                        logger.info('setting logging level to: %s', LOG_LEVEL)
+                        logger.setLevel(logging.DEBUG)
+                else:
+                    log_level: str = os.getenv('LOG_LEVEL', DEFAULT_LOG_LEVEL)
+                    if not log_level == LOG_LEVEL:
+                        logger.info('setting logging level to: %s', log_level)
+                        logger.setLevel(log_level)
+                        LOG_LEVEL = log_level
                 if 'reload_timer' in cf_obj and cf_obj['reload_timer']:
-                    RELOAD_TIMER = cf_obj['reload_timer']
-                    logger.info('setting configuration reload timer to %d seconds', RELOAD_TIMER)
+                    if not RELOAD_TIMER == cf_obj['reload_timer']:
+                        RELOAD_TIMER = cf_obj['reload_timer']
+                        logger.info(
+                            'setting configuration reload timer to %d seconds',
+                            RELOAD_TIMER)
                 return cf_obj['policies']
             except Exception as error:
                 logger.error("Can not load config file: %s: %s",
@@ -34,13 +48,22 @@ def read_config_from_local_file(filepath: str):
 
 
 def read_config_from_url(fileurl: str):
-    global RELOAD_TIMER
-    logger.info('reading configuration from %s', fileurl)
+    global RELOAD_TIMER, LOG_LEVEL
+    logger.debug('reading configuration from %s', fileurl)
     try:
         with urllibrequest.urlopen(fileurl) as cf:
             cf_obj = yaml.safe_load(cf)
             if 'debug' in cf_obj and cf_obj['debug']:
-                logger.setLevel(logging.DEBUG)
+                if not LOG_LEVEL == 'DEBUG':
+                    LOG_LEVEL = 'DEBUG'
+                    logger.info('setting logging level to: %s', LOG_LEVEL)
+                    logger.setLevel(logging.DEBUG)
+            else:
+                log_level: str = os.getenv('LOG_LEVEL', DEFAULT_LOG_LEVEL)
+                if not log_level == LOG_LEVEL:
+                    logger.info('setting logging level to: %s', log_level)
+                    logger.setLevel(log_level)
+                    LOG_LEVEL = log_level
             if 'reload_timer' in cf_obj and cf_obj['reload_timer']:
                 RELOAD_TIMER = cf_obj['reload_timer']
             return cf_obj['policies']
@@ -51,12 +74,13 @@ def read_config_from_url(fileurl: str):
 
 
 def intialize_config():
-    global CONFIG_FILE
-    CONFIG_FILE = os.getenv('CONFIG_FILE', DEFAULT_CONFIG_FILE)
-    log_level: str = os.getenv('LOG_LEVEL', DEFAULT_LOG_LEVEL)
+    global CONFIG_FILE, LOG_LEVEL
+    CONFIG_FILE = os.getenv('CONFIG_FILE', CONFIG_FILE)
+    log_level: str = os.getenv('LOG_LEVEL', LOG_LEVEL)
     if log_level in logging._nameToLevel:
-        logger.info('setting logging level to: %s', log_level)
-        logger.setLevel(log_level)
+        if not log_level == LOG_LEVEL:
+            logger.info('setting logging level to: %s', log_level)
+            logger.setLevel(log_level)
     else:
         raise ValueError('Configuration error: LOG_LEVEL must be in: %s',
                          logging._nameToLevel.keys())
