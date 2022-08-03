@@ -32,7 +32,7 @@ policies: dict = {}
 
 
 class YAMLResponse(Response):
-    media_type: 'application/yaml'
+    media_type: str = 'application/yaml'
 
 
 class Settings(BaseModel):

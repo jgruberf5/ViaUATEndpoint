@@ -15,7 +15,7 @@ CONFIG_FILE: str = None
 LOG_LEVEL: str = None
 RELOAD_INTERVAL: int = 0
 RELOAD_TIMER: Timer = None
-
+BYPASS_RELOAD: False
 POLICIES: dict = {}
 
 import logging_config
@@ -111,9 +111,12 @@ def export_config_file_as_yaml():
 
 
 def initialize_configurations(config_file=None):
-    global CONFIG_FILE
+    global CONFIG_FILE, BYPASS_RELOAD
     if not config_file:
         config_file = os.getenv('CONFIG_FILE', DEFAULT_CONFIG_FILE)
+    BYPASS_RELOAD = os.getenv('BYPASS_RELOAD', 'False').lower() in ('true', '1', 't')
+    if BYPASS_RELOAD:
+        logger.warning('BYPASS_RELOAD is set.. configuration reloading disabled')
     CONFIG_FILE = utils.sub_env_variables(config_file)
     policy_list = []
     if utils.is_url(config_file):
@@ -155,7 +158,7 @@ def reload_on_time(reload_interval):
     global RELOAD_INTERVAL, RELOAD_TIMER
     if RELOAD_TIMER:
         RELOAD_TIMER.cancel()
-    if reload_interval > 0:
+    if reload_interval > 0 and not BYPASS_RELOAD:
         RELOAD_INTERVAL = reload_interval
         RELOAD_TIMER = Timer(
             RELOAD_INTERVAL, True,
