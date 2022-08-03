@@ -446,7 +446,10 @@ async def get_config_yaml_file():
     else:
         config_content['debug'] = False
     config_content['reload_timer'] = config.RELOAD_INTERVAL
-    config_content['policies'] = policies
+    return_policies = []
+    for policy in policies:
+        return_policies.append(policies[policy])
+    config_content['policies'] = return_policies
     return Response(content=yaml.safe_dump(config_content, sort_keys=False),
                     status_code=200, media_type='application/yaml')
 
@@ -459,7 +462,10 @@ async def get_config_json_file():
     else:
         config_content['debug'] = False
     config_content['reload_timer'] = config.RELOAD_INTERVAL
-    config_content['policies'] = policies
+    return_policies = []
+    for policy in policies:
+        return_policies.append(policies[policy])
+    config_content['policies'] = return_policies
     return Response(content=json.dumps(config_content, sort_keys=False),
                     status_code=200, media_type='application/yaml')
 
