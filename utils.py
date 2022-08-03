@@ -404,9 +404,8 @@ def get_matched_policy_hash(request, policy_hashes, policies):
         if 'query' in policy and policy['query']:
             # If multiple headers are present, all must match.
             query_required_to_match = 0
-            if 'query_match_policy' not in policy:
-                policy['query_match_policy'] = 'and'
-            if policy['query_match_policy'].lower() == 'and':
+            if 'query_match_policy' not in policy or \
+                    policy['query_match_policy'].lower() == 'and':
                 query_required_to_match = len(policy['query'])
             elif policy['query_match_policy'].lower() == 'or':
                 query_required_to_match = 1

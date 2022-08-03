@@ -2,6 +2,7 @@ import asyncio
 from inspect import iscoroutine
 
 import logging_config
+import config
 
 logger = logging_config.init_logging()
 

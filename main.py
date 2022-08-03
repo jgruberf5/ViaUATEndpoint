@@ -4,15 +4,13 @@
 import json
 import logging
 import os
+import yaml
 
 import logging_config
 import const
 import config
 import runners
 import utils
-
-from timer import Timer
-from deepdiff import DeepDiff
 
 import urllib.parse as urllibparse
 import validators
@@ -30,9 +28,30 @@ from const import DEFAULT_CONFIG_FILE, DEFAULT_POLICIES, VALID_HTTP_STATUS_CODES
 
 logger = logging_config.init_logging()
 
-last_id: int = 0
 policies: dict = {}
-reload_timer: Timer = None
+
+
+class YAMLResponse(Response):
+    media_type: 'application/yaml'
+
+
+class Settings(BaseModel):
+    log_level: Union[str, None] = Field(
+        default = const.DEFAULT_LOG_LEVEL,
+        title = 'Logging Level',
+        description= 'The level of logging in %s' % logging._nameToLevel.keys()
+    )
+    config_file: Union[str, None] = Field(
+        default = const.DEFAULT_CONFIG_FILE,
+        title = 'Configuration File',
+        description = 'The file path or URL to load for configurations'
+    )
+    reload_timer: Union[int, None] = Field(
+        default = 0,
+        title = 'Reload Timer',
+        description = 'The seconds between configuration file reloads, 0 is no reloading'
+    )
+
 
 class RunScript(BaseModel):
     delay_ms: Union[int, None] = Field(
@@ -123,7 +142,7 @@ class RunScript(BaseModel):
 
     @validator('redirect_status_code')
     def redirect_status_code_must_be_in_list(cls, v):
-        if v not in [301, 302, 307]:
+        if int(v) not in const.VALID_REDIRECT_STATUS_CODES:
             raise HTTPException(
                 status_code=400,
                 detail='redirect_status_code should be 301,302 or 307')
@@ -131,12 +150,12 @@ class RunScript(BaseModel):
 
     @validator('proxy_url')
     def proxy_url_must_be_valid_url(cls, v):
-        print(v)
-        if isinstance(validators.url(v), validators.ValidationFailure):
+        if not v == 'NONE' and isinstance(validators.url(v), validators.ValidationFailure):
             raise HTTPException(
                 status_code=400,
                 detail='proxy_url must be a valid URL'
             )
+        return v
 
 class Policy(BaseModel):
     id: Union[int, None] = Field(
@@ -230,7 +249,7 @@ class PolicyCreate(BaseModel):
         title='HTTP Request Method',
         description='The HTTP request method to match the request')
     headers: Union[List[Mapping[str, str]], None] = Field(
-        default='NONE',
+        default=[],
         title='HTTP headers and values to match',
         description='List of HTTP headers and values to match for the request')
     header_match_policy: Union[str, None] = Field(
@@ -359,24 +378,8 @@ app.mount('/static', StaticFiles(directory='static', html=True), name='static')
 
 @app.on_event('startup')
 async def startup_event():
-    load_config()
-    if config.RELOAD_TIMER > 0:
-        reload_on_time(config.RELOAD_TIMER)
-
-
-def load_config():
-    global last_id, policies
-    last_id, new_policies = config.intialize_config()
-    if DeepDiff(policies, new_policies, ignore_string_case=True):
-        logger.info('Configuration changed... loading new policies')
-        policies = new_policies
-
-
-def reload_on_time(seconds_between_reload):
-    global reload_timer
-    if seconds_between_reload > 0:
-        if not reload_timer:
-            reload_timer = Timer(seconds_between_reload, True, load_config)
+    global policies
+    policies = config.initialize_configurations()
 
 
 def get_policy_by_id(id: int):
@@ -408,29 +411,55 @@ def apply_policy(request, response):
                         media_type='text/plain')
 
 
-@app.get('/logging/', response_class=JSONResponse)
-async def set_level(level: str = 'INFO'):
-    if level:
-        if level in logging._nameToLevel:
-            logger.warning('setting log level to: %s', level)
-            logger.setLevel(logging._nameToLevel[level])
+@app.get('/settings/', response_model=Settings, response_class=JSONResponse)
+async def set_service_settings():
+    return Settings(log_level=logging._levelToName[logger.level],
+                    config_file=config.CONFIG_FILE,
+                    reload_timer=config.RELOAD_INTERVAL)
+
+
+@app.post('/settings/', response_model=Settings, response_class=JSONResponse)
+async def set_service_settings(settings: Settings):
+    global policies
+    if settings.log_level:
+        if settings.log_level in logging._nameToLevel:
+            logger.warning('setting log level to: %s', settings.log_level)
+            logger.setLevel(logging._nameToLevel[settings.log_level])
         else:
-            raise HTTPException(status_code=400,
-                                detail='Invalid level: %s' % level)
+            raise HTTPException(
+                status_code=400,
+                detail='Invalid logLevel: %s' % settings.log_level)
+    config.set_settings(
+        config_file=settings.config_file,
+        log_level=settings.log_level,
+        reload_timer=settings.reload_timer)
+    return settings
+
+
+@app.get('/config_yaml/', response_class=YAMLResponse)
+async def get_config_yaml_file():
+    config_content = {}
+    if logging._levelToName[logger.level] == 'DEBUG':
+        config_content['debug'] = True
     else:
-        level = logger.getEffectiveLevel()
-    return Response(content=json.dumps({'log_level': level}),
-                    status_code=200, media_type='application/json')
+        config_content['debug'] = False
+    config_content['reload_timer'] = config.RELOAD_INTERVAL
+    config_content['policies'] = policies
+    return Response(content=yaml.safe_dump(config_content, sort_keys=False),
+                    status_code=200, media_type='application/yaml')
 
 
-@app.get('/config/', response_class=JSONResponse)
-async def reload_config_from_file(config_file: str = None, reload_timer: int = 0):
-    global last_id, policies
-    last_id, policies = config.load_policies(config_file, reload_timer)
-    if reload_timer > 0:
-        reload_on_time(config.RELOAD_TIMER)
-    return Response(content=json.dumps({'config_file': config.CONFIG_FILE}),
-                    status_code=200, media_type='application/json')
+@app.get('/config_json/', response_class=JSONResponse)
+async def get_config_yaml_file():
+    config_content = {}
+    if logging._levelToName[logger.level] == 'DEBUG':
+        config_content['debug'] = True
+    else:
+        config_content['debug'] = False
+    config_content['reload_timer'] = config.RELOAD_INTERVAL
+    config_content['policies'] = policies
+    return Response(content=json.dumps(config_content, sort_keys=False),
+                    status_code=200, media_type='application/yaml')
 
 
 @app.get('/environment/', response_class=JSONResponse)
@@ -460,37 +489,31 @@ async def get_policies(id: int):
           response_model=List[Policy],
           response_class=JSONResponse)
 async def create_policy(policy: PolicyCreate):
-    global last_id
-    last_id = last_id + 1
-    id = last_id
-    policy_hash = "%s-%s-%s-%s" % (policy.src_cidr, policy.method,
-                                   policy.header,
-                                   urllibparse.unquote(policy.path_re_match))
-    reply_scripts = []
-    for rs in policy.reply_scripts:
-        rs = {
-            'delay_ms': rs.delay_ms,
-            'repeat': rs.repeat,
-            'status_code': rs.status_code,
-            'mime_type': rs.mime_type,
-            'body': rs.body,
-            'body_encoding': rs.body_encoding
-        }
-        reply_scripts.append(rs)
-    policy_dict = {
-        'id': id,
-        'src_cidr': policy.src_cidr,
-        'method': policy.method,
-        'header': policy.header,
-        'path_re_match': urllibparse.unquote(policy.path_re_match),
-        'ip_version': policy.ip_version,
-        'reply_scripts': reply_scripts
-    }
+    policy_dict = policy.dict()
+    policy_dict['id'] = config.get_next_policy_id()
+    policy_hash = utils.get_policy_hash(policy_dict)
+    print("%s: %s" % (policy_hash, policy_dict))
+
     if policy_hash in policies:
         raise HTTPException(status_code=409,
                             detail='Policy with same match criteria exists.')
     else:
         policies[policy_hash] = policy_dict
+    return list(policies.values())
+
+
+@app.put('/policies/',
+         response_model=List[Policy],
+         response_class=JSONResponse)
+async def update_policy(policy: Policy):
+    policy_dict: dict = policy.dict()
+    existing_policy = get_policy_by_id(policy.id)
+    if existing_policy:
+        del policies[utils.get_policy_hash(existing_policy)]
+        policy_hash = utils.get_policy_hash(policy_dict)
+        policies[policy_hash] = policy_dict
+    else:
+        raise HTTPException(status_code=404)
     return list(policies.values())
 
 
@@ -500,15 +523,15 @@ async def create_policy(policy: PolicyCreate):
 async def delete_policy(id: int):
     policy = get_policy_by_id(id)
     if policy:
-        policy_hash = "%s-%s-%s-%s" % (policy['src_cidr'], policy['method'],
-                                       policy['header'],
-                                       policy['path_re_match'])
+        policy_hash = utils.get_policy_hash(policy)
         if policy_hash in policies.keys():
             del policies[policy_hash]
     else:
         raise HTTPException(status_code=404)
     return list(policies.values())
 
+
+## Policy Driven Responses
 
 @app.get('/{path_value:path}')
 async def get_response(path_value: str, request: Request, response: Response):
