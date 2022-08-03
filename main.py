@@ -411,14 +411,16 @@ def apply_policy(request, response):
                         media_type='text/plain')
 
 
-@app.get('/settings/', response_model=Settings, response_class=JSONResponse)
-async def set_service_settings():
+@app.get('/settings/', response_model=Settings, response_class=JSONResponse,
+         tags=['Application Settings'])
+async def get_service_settings():
     return Settings(log_level=logging._levelToName[logger.level],
                     config_file=config.CONFIG_FILE,
                     reload_timer=config.RELOAD_INTERVAL)
 
 
-@app.post('/settings/', response_model=Settings, response_class=JSONResponse)
+@app.post('/settings/', response_model=Settings, response_class=JSONResponse,
+          tags=['Application Settings'])
 async def set_service_settings(settings: Settings):
     global policies
     if settings.log_level:
@@ -436,7 +438,7 @@ async def set_service_settings(settings: Settings):
     return settings
 
 
-@app.get('/config_yaml/', response_class=YAMLResponse)
+@app.get('/config_yaml/', response_class=YAMLResponse, tags=['Configuration Output'])
 async def get_config_yaml_file():
     config_content = {}
     if logging._levelToName[logger.level] == 'DEBUG':
@@ -449,8 +451,8 @@ async def get_config_yaml_file():
                     status_code=200, media_type='application/yaml')
 
 
-@app.get('/config_json/', response_class=JSONResponse)
-async def get_config_yaml_file():
+@app.get('/config_json/', response_class=JSONResponse, tags=['Configuration Output'])
+async def get_config_json_file():
     config_content = {}
     if logging._levelToName[logger.level] == 'DEBUG':
         config_content['debug'] = True
@@ -462,8 +464,8 @@ async def get_config_yaml_file():
                     status_code=200, media_type='application/yaml')
 
 
-@app.get('/environment/', response_class=JSONResponse)
-async def dump_evironment():
+@app.get('/environment/', response_class=JSONResponse, tags=['Local Environment'])
+async def display_evironment_variables():
     return Response(content=json.dumps(dict(os.environ)),
                     status_code=200,
                     media_type='application/json')
@@ -471,13 +473,15 @@ async def dump_evironment():
 
 @app.get('/policies/',
          response_model=List[Policy],
-         response_class=JSONResponse)
-async def get_policies():
+         response_class=JSONResponse,
+         tags=['Policy Management'])
+async def list_policies():
     return list(policies.values())
 
 
-@app.get('/policies/{id}', response_model=Policy, response_class=JSONResponse)
-async def get_policies(id: int):
+@app.get('/policies/{id}', response_model=Policy, response_class=JSONResponse,
+         tags=['Policy Management'])
+async def get_policy(id: int):
     policy = get_policy_by_id(id)
     if policy:
         return policy
@@ -487,7 +491,8 @@ async def get_policies(id: int):
 
 @app.post('/policies/',
           response_model=List[Policy],
-          response_class=JSONResponse)
+          response_class=JSONResponse,
+          tags=['Policy Management'])
 async def create_policy(policy: PolicyCreate):
     policy_dict = policy.dict()
     policy_dict['id'] = config.get_next_policy_id()
@@ -504,7 +509,8 @@ async def create_policy(policy: PolicyCreate):
 
 @app.put('/policies/',
          response_model=List[Policy],
-         response_class=JSONResponse)
+         response_class=JSONResponse,
+         tags=['Policy Management'])
 async def update_policy(policy: Policy):
     policy_dict: dict = policy.dict()
     existing_policy = get_policy_by_id(policy.id)
@@ -519,7 +525,8 @@ async def update_policy(policy: Policy):
 
 @app.delete('/policies/{id}',
             response_model=List[Policy],
-            response_class=JSONResponse)
+            response_class=JSONResponse,
+            tags=['Policy Management'])
 async def delete_policy(id: int):
     policy = get_policy_by_id(id)
     if policy:
@@ -533,39 +540,39 @@ async def delete_policy(id: int):
 
 ## Policy Driven Responses
 
-@app.get('/{path_value:path}')
+@app.get('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def get_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.post('/{path_value:path}')
+@app.post('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def post_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.put('/{path_value:path}')
+@app.put('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def put_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.patch('/{path_value:path}')
+@app.patch('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def patch_response(path_value: str, request: Request,
                          response: Response):
     return apply_policy(request, response)
 
 
-@app.head('/{path_value:path}')
+@app.head('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def head_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.delete('/{path_value:path}')
+@app.delete('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def delete_response(path_value: str, request: Request,
                           response: Response):
     return apply_policy(request, response)
 
 
-@app.options('/{path_value:path}')
+@app.options('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
 async def options_response(path_value: str, request: Request,
                            response: Response):
     return apply_policy(request, response)
