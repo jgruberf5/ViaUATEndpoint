@@ -31,6 +31,8 @@ def run_script(script, request, response):
         return run_serve_local(script, request, response)
     if script['action'] == 'proxy':
         return proxy(script, request, response)
+    if script['action'] == 'dump':
+        return dump(script, request, response)
     return Response(content='invalid action in run script',
                     status_code=400,
                     media_type='text/plain')
@@ -74,6 +76,19 @@ def proxy(script, request, response):
     rep = client.send(req)
     return StreamingResponse(
         rep.aiter_text())
+
+
+def dump(script, request, response):
+    dump_dict = {
+        'url': str(request.url),
+        'method': request.method,
+        'headers': dict(request.headers),
+        'query': dict(request.query_params),
+        'clientip': request.client.host,
+        'cookies': dict(request.cookies)
+    }
+    return Response(content=json.dumps(dump_dict),
+                    status_code=200, media_type='application/json')
 
 
 def zero_out_runs(policy_hash: str, policies):

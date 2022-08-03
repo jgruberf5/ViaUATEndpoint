@@ -73,7 +73,7 @@ class RunScript(BaseModel):
         default='direct_response',
         title='Script action',
         description=
-        'What action to take: direct_response, redirect, serve_local, or proxy')
+        'What action to take: direct_response, redirect, serve_local, dump, or proxy')
     direct_response_status_code: Union[int, None] = Field(
         default=200,
         title='HTTP response status code',
