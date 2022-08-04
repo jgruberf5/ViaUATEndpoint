@@ -2,6 +2,10 @@
 
 .vscode
 
+# Local builds
+
+local_build.sh
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
