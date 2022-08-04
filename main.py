@@ -546,39 +546,39 @@ async def delete_policy(id: int):
 
 ## Policy Driven Responses
 
-@app.get('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.get('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def get_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.post('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.post('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def post_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.put('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.put('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def put_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.patch('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.patch('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def patch_response(path_value: str, request: Request,
                          response: Response):
     return apply_policy(request, response)
 
 
-@app.head('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.head('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def head_response(path_value: str, request: Request, response: Response):
     return apply_policy(request, response)
 
 
-@app.delete('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.delete('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def delete_response(path_value: str, request: Request,
                           response: Response):
     return apply_policy(request, response)
 
 
-@app.options('/{path_value:path}', tags=['Policy Driven Response Endpoint'])
+@app.options('/{path_value:path}', tags=['Policy Driven Response Endpoints'])
 async def options_response(path_value: str, request: Request,
                            response: Response):
     return apply_policy(request, response)
