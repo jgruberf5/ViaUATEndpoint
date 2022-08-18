@@ -24,7 +24,7 @@ logger: logging.Logger = logging_config.init_logging()
 
 
 def set_settings(config_file, log_level, reload_timer):
-    global CONFIG_FILE, LOG_LEVEL, RELOAD_INTERVAL
+    global CONFIG_FILE, LOG_LEVEL, RELOAD_INTERVAL, POLICIES
     LOG_LEVEL = log_level
     logger.setLevel(LOG_LEVEL)
     RELOAD_INTERVAL = reload_timer
@@ -33,6 +33,7 @@ def set_settings(config_file, log_level, reload_timer):
     if not config_file == CONFIG_FILE:
         CONFIG_FILE = utils.sub_env_variables(config_file)
         logger.info('setting config file to API value: %s', CONFIG_FILE)
+    POLICIES = {}
     reload_configuration()
 
 
