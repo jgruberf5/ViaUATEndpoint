@@ -24,21 +24,21 @@ logger: logging.Logger = logging_config.init_logging()
 
 
 def set_settings(config_file, log_level, reload_timer):
-    global CONFIG_FILE, LOG_LEVEL, RELOAD_INTERVAL, POLICIES
+    global CONFIG_FILE, LOG_LEVEL, RELOAD_INTERVAL
     LOG_LEVEL = log_level
     logger.setLevel(LOG_LEVEL)
     RELOAD_INTERVAL = reload_timer
     if RELOAD_INTERVAL > 0:
-        logger.info('setting reloar timer to API value %d', RELOAD_INTERVAL)
+        logger.info('setting reload timer to API value %d', RELOAD_INTERVAL)
     if not config_file == CONFIG_FILE:
         CONFIG_FILE = utils.sub_env_variables(config_file)
         logger.info('setting config file to API value: %s', CONFIG_FILE)
-    POLICIES = {}
-    reload_configuration()
+    reload_configuration(flush=True)
+    return POLICIES
 
 
-def load_settings_from_config_dict(config_dict):
-    global LOG_LEVEL
+def load_settings_from_config_dict(config_dict, flush):
+    global LOG_LEVEL, POLICIES
     if 'debug' in config_dict and config_dict['debug']:
         if not LOG_LEVEL:
             LOG_LEVEL = 'DEBUG'
@@ -50,6 +50,12 @@ def load_settings_from_config_dict(config_dict):
             logger.info('setting default logging level to: %s', log_level)
             logger.setLevel(log_level)
             LOG_LEVEL = log_level
+    if flush:
+        logger.warning('Flushing any existing policies')
+        for policy in list(POLICIES.keys()):
+            logger.debug('deleting old policy %s', policy)
+            del POLICIES[policy]
+        POLICIES = initialize_policies(config_dict['policies'])
     if 'reload_timer' in config_dict and config_dict['reload_timer']:
         if not RELOAD_TIMER and not RELOAD_INTERVAL:
             if config_dict['reload_timer'] > 0:
@@ -61,7 +67,7 @@ def load_settings_from_config_dict(config_dict):
             reload_on_time(RELOAD_INTERVAL)
 
 
-def read_config_from_local_file(filepath: str):
+def read_config_from_local_file(filepath: str, flush: bool = False):
     logger.debug('reading configuration from file://%s', filepath)
     if os.path.exists(filepath):
         with open(filepath) as cf:
@@ -74,15 +80,16 @@ def read_config_from_local_file(filepath: str):
                 except:
                     pass
             if config_dict:
-                load_settings_from_config_dict(config_dict)
+                load_settings_from_config_dict(config_dict, flush)
                 return config_dict['policies']
             else:
-                logger.error("Can not load config: %s as YAML or JSON",
+                logger.error("Can not load config: %s as YAML or JSON will retry in 60 seconds",
                              filepath)
-    return {}
+                reload_on_time(60)
+    return []
 
 
-def read_config_from_url(fileurl: str):
+def read_config_from_url(fileurl: str, flush: bool = False):
     logger.debug('reading configuration from %s', fileurl)
     try:
         with urllibrequest.urlopen(fileurl) as cf:
@@ -95,16 +102,18 @@ def read_config_from_url(fileurl: str):
                 except:
                     pass
             if config_dict:
-                load_settings_from_config_dict(config_dict)
+                load_settings_from_config_dict(config_dict, flush)
                 return config_dict['policies']
             else:
-                logger.error("Can not load config: %s as YAML or JSON",
+                logger.error("Can not load config: %s as YAML or JSON will retry in 60 seconds",
                              fileurl)
+                reload_configuration(60)
             return config_dict['policies']
     except Exception as error:
-        logger.error('Error retrieving config file from url: %s: %s',
+        logger.error('Error retrieving config file from url: %s: %s. will retry in 60 seconds',
                      fileurl, error)
-    return {}
+        reload_on_time(60)
+    return []
 
 
 def export_config_file_as_yaml():
@@ -121,10 +130,10 @@ def initialize_configurations(config_file=None):
     CONFIG_FILE = utils.sub_env_variables(config_file)
     policy_list = []
     if utils.is_url(config_file):
-        policy_list = read_config_from_url(CONFIG_FILE)
+        read_config_from_url(CONFIG_FILE, True)
     elif os.path.exists(config_file):
-        policy_list = read_config_from_local_file(CONFIG_FILE)
-    return initialize_policies(policy_list)
+        read_config_from_local_file(CONFIG_FILE, True)
+    return POLICIES
 
 
 def initialize_policies(policy_list):
@@ -135,13 +144,13 @@ def initialize_policies(policy_list):
     return POLICIES
 
 
-def reload_configuration():
+def reload_configuration(flush=False):
     global POLICIES
     policy_list = []
     if utils.is_url(CONFIG_FILE):
-        policy_list = read_config_from_url(CONFIG_FILE)
+        policy_list = read_config_from_url(CONFIG_FILE, flush=flush)
     elif os.path.exists(CONFIG_FILE):
-        policy_list = read_config_from_local_file(CONFIG_FILE)
+        policy_list = read_config_from_local_file(CONFIG_FILE, flush=flush)
     for policy in policy_list:
         policy_hash = utils.get_policy_hash(policy)
         if 'repeated' not in POLICIES[policy_hash]:

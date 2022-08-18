@@ -431,7 +431,7 @@ async def set_service_settings(settings: Settings):
             raise HTTPException(
                 status_code=400,
                 detail='Invalid logLevel: %s' % settings.log_level)
-    config.set_settings(
+    policies = config.set_settings(
         config_file=settings.config_file,
         log_level=settings.log_level,
         reload_timer=settings.reload_timer)
