@@ -23,3 +23,16 @@ docker build -t viauatapp:latest
 ```
 docker run --name='testapp' --rm  -p 80:80 jgruberf5/viauatapp:latest
 ```
+
+
+## Overriding Reload Setting
+
+To disable configuration reload, set an environment variable:
+
+```
+BYPASS_RELOAD=true
+```
+
+This will only stop the configuration reloading from happening on any 
+container with this environment variable set. It will not override the
+value of the `reload_timer` value in settings.
