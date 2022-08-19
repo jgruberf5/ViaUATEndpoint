@@ -164,15 +164,26 @@ def reload_configuration(flush=False):
             POLICIES[policy_hash] = policy
 
 
+def reload_bypassed():
+    logger.debug('reload of config: %s bypassed', CONFIG_FILE)
+
+
 def reload_on_time(reload_interval):
     global RELOAD_INTERVAL, RELOAD_TIMER
     if RELOAD_TIMER:
         RELOAD_TIMER.cancel()
-    if reload_interval > 0 and not BYPASS_RELOAD:
-        RELOAD_INTERVAL = reload_interval
-        RELOAD_TIMER = Timer(
-            RELOAD_INTERVAL, True,
-            reload_configuration)
+    RELOAD_INTERVAL = reload_interval
+    if reload_interval > 0:
+        if  BYPASS_RELOAD:
+            RELOAD_TIMER = Timer(
+                RELOAD_INTERVAL, True,
+                reload_bypassed
+            )
+        else:
+            RELOAD_TIMER = Timer(
+                RELOAD_INTERVAL, True,
+                reload_configuration
+            )
     else:
         logger.info('disabling configuration reloading')
 

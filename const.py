@@ -37,4 +37,4 @@ VALID_HTTP_STATUS_CODES: List[int] = [
 ]
 VALID_REDIRECT_STATUS_CODES: List[int] = [ 301, 302, 307 ]
 ACTIONS: List[str] = ['direct_response', 'redirect', 'serve_local', 'proxy', 'dump']
-VALID_DAYS_OF_WEEK = ['SU', 'M', 'T', 'W', 'R', 'F', 'SA']
+VALID_DAYS_OF_WEEK = ['SU', 'M', 'T', 'W', 'R', 'F', 'SA', 'ANY']

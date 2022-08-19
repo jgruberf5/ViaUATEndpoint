@@ -213,12 +213,12 @@ class Policy(BaseModel):
         description='Day of the week to match policy can be ANY or [SU][M][T][W][R][F][SA] i.e. SUM for Sunday and Monday'
     )
     start_time: Union[str, None] = Field(
-        default=None,
+        default='',
         title='Start Time',
         description='Star time in HH:MM:ss 24 hour format',
     )
     stop_time: Union[str, None] = Field(
-        default=None,
+        default='',
         title='Stop Time',
         description='Stop time in HH:MM:ss 24 hour format',
     )
@@ -226,6 +226,10 @@ class Policy(BaseModel):
 
 
 class PolicyCreate(BaseModel):
+    id: Union[int, None] = Field(
+        default=-1,
+        title='Policy Id',
+        description='Service generated reference to policy')
     src_cidr: Union[str, None] = Field(
         default='ALL',
         title='Client CIDR',
@@ -277,12 +281,12 @@ class PolicyCreate(BaseModel):
         description='Day of the week to match policy can be ANY or [SU][M][T][W][R][F][SA] i.e. SUM for Sunday and Monday'
     )
     start_time: Union[str, None] = Field(
-        default=None,
+        default='',
         title='Start Time',
         description='Star time in HH:MM:ss 24 hour format',
     )
     stop_time: Union[str, None] = Field(
-        default=None,
+        default='',
         title='Stop Time',
         description='Stop time in HH:MM:ss 24 hour format',
     )
@@ -343,7 +347,7 @@ class PolicyCreate(BaseModel):
 
     @validator('start_time')
     def start_time_should_be_valid_24_hour_time(cls, v):
-        if not utils.is_hhmmss(v):
+        if v and not utils.is_hhmmss(v):
             raise HTTPException(status_code=400,
                                 detail='start_time must be HH:MM:ss')
         return v
@@ -351,28 +355,71 @@ class PolicyCreate(BaseModel):
 
     @validator('stop_time')
     def stop_time_should_be_valid_24_hour_time(cls, v):
-        if not utils.is_hhmmss(v):
+        if v and not utils.is_hhmmss(v):
             raise HTTPException(status_code=400,
                                 detail='stop_time must be HH:MM:ss')
         return v
 
 
+description = """
+Application which allows you configure the response status code,
+add response latency, and return body based on matching headers,
+HTTP method, and a path regular expression match.
 
-app = FastAPI(title='ViaUATEndpoint Application',
-              description='''
-    Application which allows you configure the response status code,
-    add response latency, and return body based on matching headers,
-    HTTP method, and a path regular expression match.
-    ''',
-              version='1.0.0',
-              contact={
-                  "name": "John Gruber",
-                  "email": "j.gruber@f5.com"
-              },
-              license_info={
-                  "name": "Apache 2.0",
-                  "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-              })
+## Policy Matching
+
+The Policy Object allows you to construct a policy which can
+match requests based upon many different request attributes.
+
+The first request matching takes place if a `src_cidr` and `ip_version`
+are defined in your policy. The `src_cidr` attribute defaults to 'ALL'
+and `ip_version` defaults to 4. Once a list of potential policies matching
+the client `src_cidr` and `ip_version` are determined, the rest of the
+policy mathching creates a score of most specific attribute matches.
+
+### Matching Process Environment Variables
+
+The policy `env` attribute is a list of environment variable names and
+possible match values. The match is case sensative. The `env` list entry
+key is the name of your desired environment variable. The value can be:
+`ANY` (meaning variable is defined), and exact string match, or a regex
+patter to test for a match. An `ANY` match is considered less precise than a
+regex, which is considered less precise than an exact match. The policy match
+score (higher is better) is calculated for the precision of the match.
+
+When more than one environment match is defined in the list, the
+`env_match_policy` attribute is used to defined if a match is considered
+for `AND` (all must match), `OR` (any match), or a number which represents
+the minimum number which must match to consider a environemnt matching. This
+is a simply boolean check if the environment attributs count towards the
+overall policy match score at all.
+
+
+
+## Run Scripting
+
+## Config Reloading
+
+### Bypassing Config Reloading
+
+### Forcing Settings to Reload Configuration
+
+"""
+
+
+app = FastAPI(
+    title='ViaUATEndpoint Application',
+    description=description,
+    version='1.0.0',
+    contact={
+        "name": "John Gruber",
+        "email": "j.gruber@f5.com"
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+)
 app.mount('/static', StaticFiles(directory='static', html=True), name='static')
 
 
@@ -499,16 +546,16 @@ async def get_policy(id: int):
           response_model=List[Policy],
           response_class=JSONResponse,
           tags=['Policy Management'])
-async def create_policy(policy: PolicyCreate):
-    policy_dict = policy.dict()
-    policy_dict['id'] = config.get_next_policy_id()
-    policy_hash = utils.get_policy_hash(policy_dict)
-    print("%s: %s" % (policy_hash, policy_dict))
-
-    if policy_hash in policies:
-        raise HTTPException(status_code=409,
-                            detail='Policy with same match criteria exists.')
-    else:
+async def create_policies(declated_policies: List[PolicyCreate]):
+    for policy in list(policies.keys()):
+        del policies[policy]
+    for policy in declated_policies:
+        policy_dict = policy.dict()
+        if 'id' not in policy_dict:
+            policy_dict['id'] = config.get_next_policy_id()
+        if 'id' in policy_dict and policy_dict['id'] == -1:
+            policy_dict['id'] = config.get_next_policy_id()
+        policy_hash = utils.get_policy_hash(policy_dict)
         policies[policy_hash] = policy_dict
     return list(policies.values())
 
