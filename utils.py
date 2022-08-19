@@ -7,6 +7,7 @@ import validators
 import urllib.parse as urllibparse
 
 from datetime import datetime
+from datetime import date
 from datetime import time
 
 import logging_config
@@ -88,7 +89,13 @@ def is_between_time(start_time, end_time):
     start = time(int(start_time[0:2]), int(start_time[3:5]), int(start_time[6:]))
     end = time(int(end_time[0:2]), int(end_time[3:5]), int(end_time[6:]))
     current = datetime.now().time()
-    return start <= current <= end
+    if start <= current <= end:
+        start_dt = datetime.combine(date.today(), start)
+        end_dt = datetime.combine(date.today(), end)
+        timediff = end_dt - start_dt
+        return timediff.total_seconds()
+    else:
+        return 0
 
 
 def get_policy_hash(policy: dict):
@@ -228,33 +235,57 @@ def get_matched_policy_hash(request, policy_hashes, policies):
     """
     most_specific_policy_hash = None
     most_specific_policy_match_score = 0
+
+    lowest_timediff_policy_hash = None
+    lowest_timediff = 86400
+    time_match_score = 0
+
     for policy_hash in policy_hashes:
         policy_match_score = 0
         policy = policies[policy_hash]
         # day matching
+        day_match_score = 0
         day_match = False
         if 'day_of_week' in policy and policy['day_of_week']:
             if policy['day_of_week'].lower() == 'any':
                 day_match = True
+                day_match_score = 1
             elif is_today(policy['day_of_week']):
                 day_match = True
+                day_match_score = 2
             else:
                 logger.debug('day_of_week %s present in policy, currently false.',
                              policy['day_of_week'])
         else:
             day_match = True
+        policy_match_score = policy_match_score + day_match_score
         # time_matching
         time_match = False
         if 'start_time' in policy and policy['start_time'] and \
                          'stop_time' in policy and policy['stop_time']:
-            if is_between_time(policy['start_time'], policy['stop_time']):
+            timediff_seconds = is_between_time(policy['start_time'], policy['stop_time'])
+            if timediff_seconds:
+                logger.debug('start_time: %s stop_time: %s present in %s returned %d seconds difference',
+                    policy['start_time'], policy['stop_time'], policy_hash, timediff_seconds)
                 time_match = True
+                if lowest_timediff_policy_hash:
+                    if timediff_seconds < lowest_timediff:
+                        lowest_timediff_policy_hash = policy_hash
+                        lowest_timediff = timediff_seconds
+                        time_match_score = time_match_score + 1
+                        logger.debug('policy %s is now the smallest time window with time match score at: %d',
+                            policy_hash, time_match_score)
+                else:
+                    lowest_timediff_policy_hash = policy_hash
+                    lowest_timediff = timediff_seconds
+                    time_match_score = 1
             else:
                 logger.debug(
-                    'start_time: %s stop_time: %s present in policy, currently false.',
-                    policy['start_time'], policy['stop_time'])
+                    'start_time: %s stop_time: %s present in %s, currently false.',
+                    policy['start_time'], policy['stop_time'], policy_hash)
         else:
             time_match = True
+        policy_match_score = policy_match_score + time_match_score
         # env matching is present and value
         env_match = False
         if 'env' in policy and policy['env']:
@@ -374,6 +405,8 @@ def get_matched_policy_hash(request, policy_hashes, policies):
             header_match = True
         # Affirm method
         method_match = False
+        if 'method' not in policy:
+            policy['method'] = 'ANY'
         if policy['method'] == 'ALL' or policy['method'] == 'ANY':
             method_match = True
             policy_match_score = policy_match_score + 1
@@ -384,6 +417,8 @@ def get_matched_policy_hash(request, policy_hashes, policies):
             method_match = False
         # Affirm path regex
         path_regex_match = False
+        if 'path_re_match' not in policy:
+            policy['path_re_match'] = 'ALL'
         if policy['path_re_match'] == 'ALL':
             path_regex_match = True
             policy_match_score = policy_match_score + 1
