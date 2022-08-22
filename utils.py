@@ -360,26 +360,31 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                 header_match_scrore = 0
                 number_headers_matching = 0
                 # avoid looping over and over
-                found_headers = request.headers.keys()
-                # logger.debug('request headers: %s', found_headers)
+                request_headers = request.headers.keys()
+                # logger.debug('request headers: %s', request_headers)
                 # we have to interate through them all
                 # in case the match with the higher
                 # precise matching is latter in the match
                 for header in policy['headers']:
-                    header_name = list(header.keys())[0].lower()
+                    header_name = list(header.keys())[0]
                     header_match_value = header[header_name]
-                    if header_name in found_headers:
+                    found_header = None
+                    found_value = None
+                    for rh in request_headers:
+                        if header_name.lower() == rh.lower():
+                            found_header = rh
+                            found_value = request.headers.get(found_header)
+                    if found_header and found_value:
                         #logger.debug(
                         #    'checking header %s:%s match for %s',
                         #    header_name,
-                        #    request.headers.get(header_name),
+                        #    found_header,
                         #    header_match_value)
                         if header_match_value.lower() == 'any':
                             logger.debug('header: %s matched any', header_name)
                             number_headers_matching = number_headers_matching + 1
                             header_match_scrore = header_match_scrore + 1
-                        elif header_match_value == request.headers.get(
-                                header_name):
+                        elif header_match_value == found_value:
                             logger.debug('header: %s matched exact',
                                          header_name)
                             number_headers_matching = number_headers_matching + 1
@@ -387,9 +392,8 @@ def get_matched_policy_hash(request, policy_hashes, policies):
                         else:
                             try:
                                 p = re.compile(header_match_value)
-                                if p.match(request.headers.get(header_name)):
-                                    logger.debug('header: %s matched regex',
-                                                 header_name)
+                                if p.match(found_header):
+                                    logger.debug('header: %s matched regex', header_name)
                                     number_headers_matching = number_headers_matching + 1
                                     header_match_scrore = header_match_scrore + 2
                             except:
