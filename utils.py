@@ -49,7 +49,7 @@ def is_url(v):
     return True
 
 def is_hhmmss(v):
-    p = re.compile('^([0-2])([0-4]):([0-5])([0-9]):([0-5])([0-9])$')
+    p = re.compile('^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$')
     if p.match(v):
         return True
     return False
