@@ -55,6 +55,13 @@ def is_hhmmss(v):
     return False
 
 
+def is_hhmmss_with_wildcard(v):
+    p = re.compile('^(?:[01]\d|2[0123]|\*\*):(?:[012345]\d|\*\*):(?:[012345]\d|\*\*)$')
+    if p.match(v):
+        return True
+    return False
+
+
 def return_days_of_week(daysofweekstr):
     days = []
     for d in const.VALID_DAYS_OF_WEEK:
@@ -86,9 +93,39 @@ def is_today(daysofweekstr):
 
 
 def is_between_time(start_time, end_time):
-    start = time(int(start_time[0:2]), int(start_time[3:5]), int(start_time[6:]))
-    end = time(int(end_time[0:2]), int(end_time[3:5]), int(end_time[6:]))
     current = datetime.now().time()
+    start_hh = start_time[0:2]
+    if start_hh == '**':
+        start_hh = current.hour
+    else:
+        start_hh = int(start_hh)
+    start_mm = start_time[3:5]
+    if start_mm == '**':
+        start_mm = current.min
+    else:
+        start_mm = int(start_mm)
+    start_ss = start_time[6:]
+    if start_ss == '**':
+        start_ss = 0
+    else:
+        start_ss = int(start_ss)
+    end_hh = end_time[0:2]
+    if end_hh == '**':
+        end_hh = current.hour
+    else:
+        end_hh = int(end_hh)
+    end_mm = end_time[3:5]
+    if end_mm == '**':
+        end_mm = current.min
+    else:
+        end_mm = int(end_mm)
+    end_ss = end_time[6:]
+    if end_ss == '**':
+        end_ss = 59
+    else:
+        end_ss = int(end_ss)
+    start = time(start_hh, start_mm, start_ss)
+    end = time(end_hh, end_mm, end_ss)
     if start <= current <= end:
         start_dt = datetime.combine(date.today(), start)
         end_dt = datetime.combine(date.today(), end)

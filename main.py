@@ -347,7 +347,7 @@ class PolicyCreate(BaseModel):
 
     @validator('start_time')
     def start_time_should_be_valid_24_hour_time(cls, v):
-        if v and not utils.is_hhmmss(v):
+        if v and not utils.is_hhmmss_with_wildcard(v):
             raise HTTPException(status_code=400,
                                 detail='start_time must be HH:MM:ss')
         return v
@@ -355,7 +355,7 @@ class PolicyCreate(BaseModel):
 
     @validator('stop_time')
     def stop_time_should_be_valid_24_hour_time(cls, v):
-        if v and not utils.is_hhmmss(v):
+        if v and not utils.is_hhmmss_with_wildcard(v):
             raise HTTPException(status_code=400,
                                 detail='stop_time must be HH:MM:ss')
         return v
